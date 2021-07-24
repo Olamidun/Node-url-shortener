@@ -1,0 +1,15 @@
+{
+  "name": "shrty",
+  "version": "1.0.0",
+  "description": "An API that shortens URLs",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "author": "Kolapo Opeoluwa Olamidun",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
