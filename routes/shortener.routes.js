@@ -4,6 +4,6 @@ const createShortenedUrl = require('../controller/shortener.controller')
 
 const shortenerRouter = express.Router()
 
-shortenerRouter.post('/', createShortenedUrl)
+shortenerRouter.post('', createShortenedUrl)
 
 module.exports = shortenerRouter

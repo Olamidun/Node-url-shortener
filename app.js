@@ -12,14 +12,14 @@ app.use(express.urlencoded({extended: true }))
 
 
 try{
-    mongoose.connect('//mongodb://localhost:27017/nodecommerce', {useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true})
+    mongoose.connect('//mongodb://localhost:27017/shrty', {useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true})
         // mongodb+srv://8SgLP8Dhd1PJ3F21@@nodeecommerce.qmtrr.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
     }catch(err){
         console.log(err);
     }
 
 
-    app.use('api/shortener', shortenerRouter)
+    app.use('/api/shortener', shortenerRouter)
 
 app.listen(5000, () =>{
     console.log('Server is running')
