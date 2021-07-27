@@ -31,4 +31,22 @@ const createShortenedUrl = async(req, res) =>{
     }
 }
 
-module.exports = createShortenedUrl
+const singleUrl = async(req, res) =>{
+    const query = Url.where({randomCharacters: req.params.identifier})
+    console.log(req.params.identifier)
+
+    const shortenedUrl = await query.findOne((err, url)=>{
+        if (url) {
+            res.status(200).json({
+                status: 'fetched',
+                url
+            })
+        }
+    })
+    console.log(shortenedUrl.url)
+}
+
+module.exports = {
+    createShortenedUrl,
+    singleUrl
+}
