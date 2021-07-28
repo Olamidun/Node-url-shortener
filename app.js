@@ -1,5 +1,6 @@
 const express = require('express')
 const shortenerRouter = require('./routes/shortener.routes')
+const authRouter = require('./routes/auth.routes')
 const mongoose = require('mongoose')
 
 const app = express()
@@ -18,8 +19,9 @@ try{
         console.log(err);
     }
 
-
-    app.use('/api/shortener', shortenerRouter)
+// Routes
+app.use('/api/shortener', shortenerRouter)
+app.use('/api/auth/', authRouter)
 
 app.listen(5000, () =>{
     console.log('Server is running')
