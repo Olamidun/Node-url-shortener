@@ -9,7 +9,7 @@ const app = express()
 app.use(express.json())
 
 // middleware used to recognize the incoming request as strings or arrays.
-app.use(express.urlencoded({extended: true }))
+app.use(express.urlencoded({extended: false }))
 
 
 try{

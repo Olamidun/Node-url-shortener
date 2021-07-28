@@ -13,6 +13,7 @@ const createShortenedUrl = async(req, res) =>{
         return result.join('')
     }
     const checkUrl = validator.isURL(req.body.url)
+    console.log(req.body.url)
 
     if (checkUrl === true){
         const url = new Url({
