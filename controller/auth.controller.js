@@ -1,5 +1,6 @@
 const User = require('../models/user')
-const validationSchema = require('../utils/validation')
+const bcrypt = require('bcryptjs')
+const { validationSchema, loginSchema } = require('../utils/validation')
 
 
 const registerUser = async(req, res) =>{
@@ -12,18 +13,28 @@ const registerUser = async(req, res) =>{
     } else {
         const user = new User({
             email: req.body.email,
-            password: req.body.password
+            password: bcrypt.hashSync(req.body.password, 8)
         })
         try{
             const createdUser = await user.save()
             return res.status(201).json({
-                createdUser
+                message: 'User created successfully',
+                email: createdUser.email,
+                userId: createdUser._id
             })
         } catch(err){
             res.status(400).send(err)
         }
     }
     
+}
+
+const login = async(req, res) =>{
+    const { error } = loginSchema.validate(req.body)
+    if (error) return res.status(400).json({error})
+// } else {
+
+// }
 }
 
 module.exports = registerUser
