@@ -18,7 +18,8 @@ const createShortenedUrl = async(req, res) =>{
     if (checkUrl === true){
         const url = new Url({
             url: req.body.url,
-            randomCharacters: randomCharacter()
+            randomCharacters: randomCharacter(),
+            owner: req.user._id
         })
     
         const createdUrl = await url.save()

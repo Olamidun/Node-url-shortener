@@ -9,6 +9,11 @@ const shortenerSchema = new Schema({
     },
     randomCharacters:{
         type: String
+    },
+    owner: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        
     }
 })
 
