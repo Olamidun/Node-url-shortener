@@ -21,6 +21,8 @@ const auth = (req, res, next) =>{
                 res.status(401).send({message: 'Access denied,Invalid Token'})
             } else {
                 req.user = decode
+                // console.log(req.user)
+
                 next()
 
             }

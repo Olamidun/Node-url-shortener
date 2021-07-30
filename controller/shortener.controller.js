@@ -34,21 +34,47 @@ const createShortenedUrl = async(req, res) =>{
 }
 
 const singleUrl = async(req, res) =>{
-    const query = Url.where({randomCharacters: req.params.identifier})
-    console.log(req.params.identifier)
+    try{
+        const query = Url.where({randomCharacters: req.params.identifier})
+        console.log(req.params.identifier)
 
-    const shortenedUrl = await query.findOne((err, url)=>{
-        if (url) {
-            res.status(200).json({
-                status: 'fetched',
-                url
+        await query.findOne((err, url)=>{
+            if (url) {
+                res.status(200).json({
+                    status: 'fetched',
+                    url
+                })
+            }
+        })
+    } catch(err){
+        res.json({
+            err
+        })
+    }
+}
+
+const deleteUrl = async(req, res) =>{
+    
+    const url = await Url.findOne({randomCharacters: req.params.identifier})
+    try{
+        if (req.user._id == url.owner._id){
+            url.delete()
+            res.json({
+                message: 'Url deleted!'
             })
+        } else {
+            res.send('You cannot access this url as you were not the one that shortened it')
         }
-    })
-    console.log(shortenedUrl.url)
+    } catch(err){
+        res.json({
+            err
+        })
+    }
+    
 }
 
 module.exports = {
     createShortenedUrl,
-    singleUrl
+    singleUrl, 
+    deleteUrl
 }
