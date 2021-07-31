@@ -1,7 +1,7 @@
 const User = require('../models/user')
 const bcrypt = require('bcryptjs')
 const { validationSchema, loginSchema } = require('../utils/validation')
-const token = require('../utils/token')
+const { generateToken } = require('../utils/token')
 
 
 const registerUser = async(req, res) =>{
@@ -40,7 +40,7 @@ const login = async(req, res) =>{
         if (user){
             if(bcrypt.compareSync(req.body.password, user.password)){
                 
-                res.status(200).json({message: 'User logged in successfully', token: token(user)})
+                res.status(200).json({message: 'User logged in successfully', token: generateToken(user)})
             } else {
                 res.status(400).json({message: 'Invalid login details'})
             }

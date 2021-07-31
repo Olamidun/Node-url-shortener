@@ -63,7 +63,7 @@ const deleteUrl = async(req, res) =>{
                 message: 'Url deleted!'
             })
         } else {
-            res.send('You cannot access this url as you were not the one that shortened it')
+            res.status(401).json({error: 'You cannot access this url as you were not the one that shortened it'})
         }
     } catch(err){
         res.json({
@@ -73,8 +73,27 @@ const deleteUrl = async(req, res) =>{
     
 }
 
+const updateUrl = async(req, res) =>{
+    const url = await Url.findOne({
+        randomCharacters: req.params.identifier
+    })
+    console.log(url)
+
+    if (req.user._id == url.owner._id){
+        url.url = req.body.url
+        await url.save()
+        res.json({
+            message: 'Url has been updated successfully',
+            url: url.url
+        })
+    } else {
+        res.status(401).json({error: 'You cannot access this url as you were not the one that shortened it'})
+    }
+}
+
 module.exports = {
     createShortenedUrl,
     singleUrl, 
-    deleteUrl
+    deleteUrl,
+    updateUrl
 }
