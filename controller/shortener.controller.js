@@ -33,6 +33,11 @@ const createShortenedUrl = async(req, res) =>{
     }
 }
 
+const loggedInUserUrls = async(req, res) =>{
+    const url = await Url.find({owner: req.user._id})
+    res.send(url)
+}
+
 const singleUrl = async(req, res) =>{
     try{
         const query = Url.where({randomCharacters: req.params.identifier})
@@ -93,6 +98,7 @@ const updateUrl = async(req, res) =>{
 
 module.exports = {
     createShortenedUrl,
+    loggedInUserUrls,
     singleUrl, 
     deleteUrl,
     updateUrl
