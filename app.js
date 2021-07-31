@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require('express')
 const shortenerRouter = require('./routes/shortener.routes')
 const authRouter = require('./routes/auth.routes')

@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken')
 const generateToken = (user) =>{
     return jwt.sign({
         _id: user._id
-    }, 'somethingsecret', {
+    }, `${process.env.SECRET}` || 'somethingsecret', {
         expiresIn: '10d'
     })
 }
@@ -16,7 +16,7 @@ const auth = (req, res, next) =>{
     })
     } else {
         const token = authorization.slice(7, authorization.length)
-        jwt.verify(token, 'somethingsecret', (err, decode) =>{
+        jwt.verify(token, `${process.env.SECRET}` || 'somethingsecret', (err, decode) =>{
             if (err) {
                 res.status(401).send({message: 'Access denied,Invalid Token'})
             } else {
