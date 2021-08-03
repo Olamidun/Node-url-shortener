@@ -1,6 +1,7 @@
 const Url = require('../models/shortener')
 const validator = require('validator')
 const sendEmail = require('../utils/sendEmail')
+const requestpasswordReset = require('../services/passwordReset.service')
 
 
 const createShortenedUrl = async(req, res) =>{
@@ -98,9 +99,9 @@ const updateUrl = async(req, res) =>{
 }
 
 const sendEmailEndpoint = async(req, res) =>{
-    email = await sendEmail(req.body.email)
-    console.log(email)
-    res.send(email)
+    passwordReset = await requestpasswordReset(req.body.email)
+    console.log(passwordReset)
+    res.send(passwordReset)
 
 }
 
