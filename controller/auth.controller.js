@@ -2,9 +2,10 @@ const User = require('../models/user')
 const bcrypt = require('bcryptjs')
 const { validationSchema, loginSchema } = require('../utils/validation')
 const { generateToken } = require('../utils/token')
+const { requestpasswordReset, resetPassword } = require('../services/passwordReset.service')
 
 
-const registerUser = async(req, res) =>{
+const registerUserController = async(req, res) =>{
 
     // validate data 
 
@@ -30,7 +31,7 @@ const registerUser = async(req, res) =>{
     
 }
 
-const login = async(req, res) =>{
+const loginController = async(req, res) =>{
     const { error } = loginSchema.validate(req.body)
     if (error) return res.status(400).json({error})
     else {
@@ -50,6 +51,28 @@ const login = async(req, res) =>{
             })
         }
     }
-} 
+}
 
-module.exports = { registerUser, login } 
+const requestResetPasswordController = async(req, res) =>{
+    passwordReset = await requestpasswordReset(req.body.email)
+    console.log(passwordReset)
+    res.send(passwordReset)
+
+}
+
+const resetPasswordController = async(req, res) =>{
+    if (req.body.password == req.body.repeatPassword){
+        const resetPasswordService = await resetPassword(req.body.userId, req.body.token, req.body.password)
+        res.status(200).json({
+            status: resetPasswordService,
+            message: "Your password has been reset successfully!"
+        })
+    } else {
+        res.status(400).json({
+            message: "Passwords do not match!"
+        })
+    }
+    
+}
+
+module.exports = { registerUserController, loginController, requestResetPasswordController, resetPasswordController } 

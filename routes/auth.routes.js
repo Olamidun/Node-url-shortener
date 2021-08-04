@@ -1,12 +1,15 @@
 const express = require('express')
 const User = require('../models/user')
 // const validationSchema = require('../utils/validation')
-const { registerUser, login } = require('../controller/auth.controller')
+const { registerUserController, loginController, requestResetPasswordController, resetPasswordController } = require('../controller/auth.controller')
 
 const authRouter = express.Router()
 
-authRouter.post('/register', registerUser)
+authRouter.post('/register', registerUserController)
 
-authRouter.post('/login', login)
+authRouter.post('/login', loginController)
+
+authRouter.post('/requestPasswordReset', requestResetPasswordController)
+authRouter.post('/resetPassword', resetPasswordController)
 
 module.exports = authRouter

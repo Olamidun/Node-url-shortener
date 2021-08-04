@@ -1,10 +1,9 @@
 const Url = require('../models/shortener')
 const validator = require('validator')
 const sendEmail = require('../utils/sendEmail')
-const requestpasswordReset = require('../services/passwordReset.service')
 
 
-const createShortenedUrl = async(req, res) =>{
+const createShortenedUrlController = async(req, res) =>{
     let randomCharacter = () =>{
         var result = [];
         var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';;
@@ -35,12 +34,12 @@ const createShortenedUrl = async(req, res) =>{
     }
 }
 
-const loggedInUserUrls = async(req, res) =>{
+const loggedInUserUrlsController = async(req, res) =>{
     const url = await Url.find({owner: req.user._id})
     res.send(url)
 }
 
-const singleUrl = async(req, res) =>{
+const singleUrlController = async(req, res) =>{
     try{
         const query = Url.where({randomCharacters: req.params.identifier})
         console.log(req.params.identifier)
@@ -60,7 +59,7 @@ const singleUrl = async(req, res) =>{
     }
 }
 
-const deleteUrl = async(req, res) =>{
+const deleteUrlController = async(req, res) =>{
     
     const url = await Url.findOne({randomCharacters: req.params.identifier})
     try{
@@ -80,7 +79,7 @@ const deleteUrl = async(req, res) =>{
     
 }
 
-const updateUrl = async(req, res) =>{
+const updateUrlController = async(req, res) =>{
     const url = await Url.findOne({
         randomCharacters: req.params.identifier
     })
@@ -98,18 +97,10 @@ const updateUrl = async(req, res) =>{
     }
 }
 
-const sendEmailEndpoint = async(req, res) =>{
-    passwordReset = await requestpasswordReset(req.body.email)
-    console.log(passwordReset)
-    res.send(passwordReset)
-
-}
-
 module.exports = {
-    createShortenedUrl,
-    loggedInUserUrls,
-    singleUrl, 
-    deleteUrl,
-    updateUrl,
-    sendEmailEndpoint
+    createShortenedUrlController,
+    loggedInUserUrlsController,
+    singleUrlController, 
+    deleteUrlController,
+    updateUrlController
 }

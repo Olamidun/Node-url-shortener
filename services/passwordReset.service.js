@@ -32,4 +32,27 @@ const requestpasswordReset = async (email) =>{
         link};
 }
 
-module.exports = requestpasswordReset
+
+const resetPassword = async (userId, token, password) =>{
+    let passwordResetToken = await Token.findOne({ userId
+    })
+    if (!passwordResetToken) {
+        throw new Error("Invalid or expired password reset token!")
+    }
+    const isValid = await bcrypt.compare(token, passwordResetToken.token);
+    if (!isValid){
+        throw new Error("Invalid or expired password reset token!")
+    }
+    const hash = await bcrypt.hash(password, 8)
+    await User.updateOne({_id: userId}, 
+        {$set: { password: hash }},
+        {new: true}
+    )
+
+    const user = await User.findById({ _id: userId })
+    sendEmail(user.email, "Password has been reset successfully", {email: user.email, link: "https://www.google.com"})
+
+    await passwordResetToken.deleteOne()
+    return true
+}
+module.exports = { requestpasswordReset, resetPassword }
