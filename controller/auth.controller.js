@@ -64,8 +64,7 @@ const resetPasswordController = async(req, res) =>{
     if (req.body.password == req.body.repeatPassword){
         const resetPasswordService = await resetPassword(req.body.userId, req.body.token, req.body.password)
         res.status(200).json({
-            status: resetPasswordService,
-            message: "Your password has been reset successfully!"
+            status: resetPasswordService
         })
     } else {
         res.status(400).json({

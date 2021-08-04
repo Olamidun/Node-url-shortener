@@ -9,7 +9,7 @@ const requestpasswordReset = async (email) =>{
     const user = await User.findOne({ email })
 
     if (!user) {
-        throw new Error("User with this email does not exist!")
+        return {error: "User with this email does not exist!" }
     }
     let token = await Token.findOne({ userId: user._id })
     if (token) {
@@ -37,11 +37,11 @@ const resetPassword = async (userId, token, password) =>{
     let passwordResetToken = await Token.findOne({ userId
     })
     if (!passwordResetToken) {
-        throw new Error("Invalid or expired password reset token!")
+        return {error: "Invalid or expired password reset token!"}
     }
     const isValid = await bcrypt.compare(token, passwordResetToken.token);
     if (!isValid){
-        throw new Error("Invalid or expired password reset token!")
+        return {error: "Invalid or expired password reset token!"}
     }
     const hash = await bcrypt.hash(password, 8)
     await User.updateOne({_id: userId}, 
@@ -53,6 +53,6 @@ const resetPassword = async (userId, token, password) =>{
     sendEmail(user.email, "Password has been reset successfully", {email: user.email, link: "https://www.google.com"})
 
     await passwordResetToken.deleteOne()
-    return true
+    return {status: true, message: "Your password has been uploaded successfully"}
 }
 module.exports = { requestpasswordReset, resetPassword }
