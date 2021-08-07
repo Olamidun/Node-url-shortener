@@ -2,20 +2,28 @@ const redis = require('redis')
 
 const client = redis.createClient()
 
-const setUrlToCache = async(shortenedUrlData) =>{
-    client.set('url', JSON.stringify(shortenedUrlData))
-    return shortenedUrlData
+const setUrlToCache = async(object) =>{
+    client.set('url', JSON.stringify(object))
+    return object
 }
 
-const getCachedUrl = (key) =>{
+const getCachedUrl = async (key) =>{
     client.get(key, (err, data) =>{
         if (err){
-            return {err}
+            return{err}
         }
         if(data) {
-            return JSON.parse(data)
+            cachedData = JSON.parse(data)
+            // console.log(cachedData)
+            return cachedData
         }
     })
 }
 
-module.exports = { setUrlToCache, getCachedUrl }
+const deleteUrlFromCache = async (key) =>{
+    client.del(key, (err, response)=>{
+        console.log(response)
+    })
+}
+
+module.exports = { setUrlToCache, getCachedUrl, deleteUrlFromCache }

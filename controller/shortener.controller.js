@@ -1,7 +1,7 @@
 const Url = require('../models/shortener')
 const validator = require('validator')
 const sendEmail = require('../utils/sendEmail')
-const { setUrlToCache, getCachedUrl } = require('../services/redisService')
+const { setUrlToCache, getCachedUrl, deleteUrlFromCache } = require('../services/redisService')
 
 const redis = require('redis')
 
@@ -29,9 +29,13 @@ const createShortenedUrlController = async(req, res) =>{
         })
     
         const createdUrl = await url.save()
+        await deleteUrlFromCache('url')
         res.status(201).json({
             status: 'created', createdUrl
         })
+        // client.del('url', (err, response)=>{
+        //     console.log(response)
+        // })
     } else {
         res.status(400).json({
             status: 'error', message: 'Invalid url'
@@ -91,7 +95,8 @@ const deleteUrlController = async(req, res) =>{
     const url = await Url.findOne({randomCharacters: req.params.identifier})
     try{
         if (req.user._id == url.owner._id){
-            url.delete()
+            await url.delete()
+            await deleteUrlFromCache('url')
             res.json({
                 message: 'Url deleted!'
             })
@@ -115,6 +120,7 @@ const updateUrlController = async(req, res) =>{
     if (req.user._id == url.owner._id){
         url.url = req.body.url
         await url.save()
+        await deleteUrlFromCache('url')
         res.json({
             message: 'Url has been updated successfully',
             url: url.url
