@@ -1,7 +1,7 @@
 require('dotenv').config()
 const express = require('express')
-const shortenerRouter = require('./routes/shortener.routes')
-const authRouter = require('./routes/auth.routes')
+const shortenerRouter = require('./src/routes/shortener.routes')
+const authRouter = require('./src/routes/auth.routes')
 const mongoose = require('mongoose')
 
 const app = express()

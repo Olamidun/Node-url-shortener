@@ -1,11 +1,11 @@
 const Url = require('../models/shortener')
 const validator = require('validator')
-const sendEmail = require('../utils/sendEmail')
-const { setUrlToCache, getCachedUrl, deleteUrlFromCache } = require('../services/redisService')
+const { deleteUrlFromCache } = require('../services/redisService')
 
 const redis = require('redis')
 
 const client = redis.createClient()
+
 
 
 const createShortenedUrlController = async(req, res) =>{
@@ -19,7 +19,6 @@ const createShortenedUrlController = async(req, res) =>{
         return result.join('')
     }
     const checkUrl = validator.isURL(req.body.url)
-    console.log(req.body.url)
 
     if (checkUrl === true){
         const url = new Url({
@@ -33,9 +32,6 @@ const createShortenedUrlController = async(req, res) =>{
         res.status(201).json({
             status: 'created', createdUrl
         })
-        // client.del('url', (err, response)=>{
-        //     console.log(response)
-        // })
     } else {
         res.status(400).json({
             status: 'error', message: 'Invalid url'
@@ -58,7 +54,7 @@ const loggedInUserUrlsController = async(req, res) =>{
                 return {err}
             }
             if(data) {
-                console.log("Fetching from cache")
+                
                 res.status(200).send(JSON.parse(data))
             } else {
                 client.set('url', JSON.stringify({url, numberOfUrl}))
