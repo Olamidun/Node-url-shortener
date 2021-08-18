@@ -15,7 +15,6 @@ app.use(express.urlencoded({extended: false }))
 
 try{
     mongoose.connect('//mongodb://localhost:27017/shrty', {useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true})
-        // mongodb+srv://8SgLP8Dhd1PJ3F21@@nodeecommerce.qmtrr.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
     }catch(err){
         console.log(err);
     }
@@ -27,3 +26,14 @@ app.use('/api/auth/', authRouter)
 app.listen(5000, () =>{
     console.log('Server is running')
 })
+
+
+// middleware to respond to 404 errors
+app.use((req, res) =>{
+    res.status(404).send({
+        error: true,
+        message: "Resource cannot be found"
+    })
+})
+
+module.exports = app // for testing

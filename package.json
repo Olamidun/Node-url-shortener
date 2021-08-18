@@ -4,7 +4,7 @@
   "description": "An API that shortens URLs",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha --recursive --timeout 6000",
     "start": "node app.js"
   },
   "author": "Kolapo Opeoluwa Olamidun",
@@ -20,5 +20,10 @@
     "nodemailer": "^6.6.3",
     "redis": "^3.1.2",
     "validator": "^13.6.0"
+  },
+  "devDependencies": {
+    "chai": "^4.3.4",
+    "chai-http": "^4.3.0",
+    "mocha": "^9.0.3"
   }
 }

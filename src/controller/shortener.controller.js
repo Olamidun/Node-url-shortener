@@ -9,32 +9,42 @@ const client = redis.createClient()
 
 
 const createShortenedUrlController = async(req, res) =>{
-    let randomCharacter = () =>{
-        var result = [];
-        var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';;
-        for ( var i = 0; i < 4; i++ ) {
-            result.push(characters.charAt(Math.floor(Math.random() * 
-            characters.length)));
-        }
-        return result.join('')
-    }
-    const checkUrl = validator.isURL(req.body.url)
 
-    if (checkUrl === true){
-        const url = new Url({
-            url: req.body.url,
-            randomCharacters: randomCharacter(),
-            owner: req.user._id
-        })
+    // function that creates random 4 letter string to be used as identifier for shortened urls.
+    try{
+
+        let randomCharacter = () =>{
+            var result = [];
+            var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';;
+            for ( var i = 0; i < 4; i++ ) {
+                result.push(characters.charAt(Math.floor(Math.random() * 
+                characters.length)));
+            }
+            return result.join('')
+        }
+        const checkUrl = validator.isURL(req.body.url)
     
-        const createdUrl = await url.save()
-        await deleteUrlFromCache('url')
-        res.status(201).json({
-            status: 'created', createdUrl
-        })
-    } else {
+        if (checkUrl === true){
+            const url = new Url({
+                url: req.body.url,
+                randomCharacters: randomCharacter(),
+                owner: req.user._id
+            })
+        
+            const createdUrl = await url.save()
+            await deleteUrlFromCache('url')
+            res.status(201).json({
+                status: 'created', createdUrl
+            })
+        } else {
+            res.status(400).json({
+                status: 'error', message: 'Invalid url'
+            })
+        }
+
+    } catch(err){
         res.status(400).json({
-            status: 'error', message: 'Invalid url'
+            error: err.errors.randomCharacters.message
         })
     }
 }
@@ -69,7 +79,7 @@ const loggedInUserUrlsController = async(req, res) =>{
 const singleUrlController = async(req, res) =>{
     try{
         const query = Url.where({randomCharacters: req.params.identifier})
-        console.log(req.params.identifier)
+        // console.log(req.params.identifier)
 
         await query.findOne((err, url)=>{
             if (url) {
@@ -117,7 +127,7 @@ const updateUrlController = async(req, res) =>{
         url.url = req.body.url
         await url.save()
         await deleteUrlFromCache('url')
-        res.json({
+        res.status(200).json({
             message: 'Url has been updated successfully',
             url: url.url
         })

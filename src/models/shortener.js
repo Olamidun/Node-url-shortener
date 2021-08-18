@@ -8,7 +8,9 @@ const shortenerSchema = new Schema({
         required: true
     },
     randomCharacters:{
-        type: String
+        type: String,
+        required: true,
+        unique: true
     },
     owner: {
         type: mongoose.Schema.Types.ObjectId,
