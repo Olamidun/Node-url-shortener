@@ -7,9 +7,9 @@ const shortenerRouter = express.Router()
 
 shortenerRouter.post('', auth, createShortenedUrlController)
 shortenerRouter.get('', auth, loggedInUserUrlsController)
-shortenerRouter.get('/:identifier', singleUrlController)
+shortenerRouter.get('/:identifier', auth, singleUrlController)
 shortenerRouter.delete('/:identifier', auth, deleteUrlController)
-shortenerRouter.patch('/:identifier', auth, updateUrlController)
+shortenerRouter.put('/:identifier', auth, updateUrlController)
 
 
 module.exports = shortenerRouter

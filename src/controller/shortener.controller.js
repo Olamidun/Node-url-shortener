@@ -51,6 +51,7 @@ const createShortenedUrlController = async(req, res) =>{
 
 const loggedInUserUrlsController = async(req, res) =>{
     const url = await Url.find({owner: req.user._id})
+    // console.log(url)
     numberOfUrl = await Url.find({owner: req.user._id}).countDocuments({}, (err, count) =>{
         if (err) {
             return err
@@ -58,22 +59,29 @@ const loggedInUserUrlsController = async(req, res) =>{
             return count
         }
     })
-    try{
-        client.get('url', (err, data) =>{
-            if (err){
-                return {err}
-            }
-            if(data) {
-                
-                res.status(200).send(JSON.parse(data))
-            } else {
-                client.set('url', JSON.stringify({url, numberOfUrl}))
-                res.status(200).json({url, numberOfUrl})
-            }
+    if (url.length !== 0){
+        try{
+            client.get('url', (err, data) =>{
+                if (err){
+                    return {err}
+                }
+                if(data) {
+                    res.status(200).send(JSON.parse(data))
+                } else {
+                    client.set('url', JSON.stringify({url, numberOfUrl}))
+                    res.status(200).json({url, numberOfUrl})
+                }
+            })
+        }catch(err){
+            res.status(500).send({error: err.message})
+        }
+    } else {
+        res.status(200).send({
+            message: "You do not have any URL created"
         })
-    }catch(err){
-        res.status(500).send({error: err.message})
     }
+    
+    
 }
 
 const singleUrlController = async(req, res) =>{
@@ -86,6 +94,11 @@ const singleUrlController = async(req, res) =>{
                 res.status(200).json({
                     status: 'fetched',
                     url
+                })
+            } else {
+                res.status(400).json({
+                    status: "error",
+                    message: "URl with that identifier does not exist"
                 })
             }
         })
