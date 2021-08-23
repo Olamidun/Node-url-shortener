@@ -9,31 +9,50 @@ chai.should();
 chai.use(chaiHttp)
 
 describe("URL shorteners", () =>{
-    beforeEach((done) =>{
-        url = new Shortener({
-            url: "https://stackoverflow.com/questions/7033331/how-to-use-mongoose-findone"
+    describe('/POST url', () =>{
+        it('it should post a url', (done) =>{
+            const url = {
+                url: "https://www.google.com",
+    
+            }
+            chai.request(app)
+            .post('/api/shortener')
+            .send(url)
+            .set('Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTAzMzQ4YTVmZDNlZDJiYTRlYmVhZWQiLCJpYXQiOjE2MjkxODY0MjksImV4cCI6MTYzMDA1MDQyOX0.98RgRq8b9MZUFVUOkmM4NWJDsNpw2OT4Ms6X1RYCHmI')
+            .end((err, res) =>{
+                res.should.have.status(201)
+                res.body.should.be.a('object')
+                res.body.should.have.property('status').eql('created')
+                res.body.should.have.property('createdUrl').which.is.an('object').and.has.property('url');
+                res.body.should.have.property('createdUrl').which.is.an('object').and.has.property('randomCharacters');
+            done()
+            })
         })
-        url.save()
-        done()
     })
 
     describe('/GET/api/shortener/:identifier', () =>{
         it('it should get a url with the given identifier', (done) =>{
     
-            //Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTAzMzQ4YTVmZDNlZDJiYTRlYmVhZWQiLCJpYXQiOjE2MjkxODY0MjksImV4cCI6MTYzMDA1MDQyOX0.98RgRq8b9MZUFVUOkmM4NWJDsNpw2OT4Ms6X1RYCHmI
-            chai.request(app)
-            .get('/api/shortener/oACh')
-            .set('Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTAzMzQ4YTVmZDNlZDJiYTRlYmVhZWQiLCJpYXQiOjE2MjkxODY0MjksImV4cCI6MTYzMDA1MDQyOX0.98RgRq8b9MZUFVUOkmM4NWJDsNpw2OT4Ms6X1RYCHmI')
-            .end((err, res) =>{
-                res.should.have.status(200);
-                res.body.should.be.a('object');
-                res.body.should.have.property('status').eql('fetched')
-                res.body.should.have.property('url').which.is.a('object').and.has.property('randomCharacters').length(4);
-            done();
+            let url = new Shortener({
+                url: 'https://www.losales.herokuapp.com/community/tutorials/test-a-node-restful-api-with-mocha-and-chai',
+                "randomCharacters": "x3og"
             })
+            url.save((err, url) =>{
+                console.log(url)
+                chai.request(app)
+                .get('/api/shortener/' + url.randomCharacters)
+                .set('Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTAzMzQ4YTVmZDNlZDJiYTRlYmVhZWQiLCJpYXQiOjE2MjkxODY0MjksImV4cCI6MTYzMDA1MDQyOX0.98RgRq8b9MZUFVUOkmM4NWJDsNpw2OT4Ms6X1RYCHmI')
+                .end((err, res) =>{
+                    res.should.have.status(200);
+                    res.body.should.be.a('object');
+                    res.body.should.have.property('status').eql('fetched')
+                    res.body.should.have.property('url').which.is.a('object').and.has.property('randomCharacters').length(4);
+                done();
+                })
+            })
+            //Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTAzMzQ4YTVmZDNlZDJiYTRlYmVhZWQiLCJpYXQiOjE2MjkxODY0MjksImV4cCI6MTYzMDA1MDQyOX0.98RgRq8b9MZUFVUOkmM4NWJDsNpw2OT4Ms6X1RYCHmI
         })
     })
-    
     
     describe('/GET/api/shortener/:identifier', () =>{
         it("it should not get a url if the wrong identifier is passed in", (done) =>{
@@ -49,7 +68,7 @@ describe("URL shorteners", () =>{
             })
         })
     })
-    
+
     describe('/GET/api/shortener', () =>{
         it("it should get all urls of a user if they url(s) created", (done) =>{
             chai.request(app)
@@ -78,82 +97,92 @@ describe("URL shorteners", () =>{
             })
         })
     })
-    
-    
-    describe('/POST url', () =>{
-        it('it should post a url', (done) =>{
+
+    describe('PATCH a loggedin user url', () =>{
+        // let updatedUrl;
+        // beforeEach(() =>{
+        //     updatedUrl = new Shortener({
+        //         url: "https://www.losales.herokuapp.com/community/tutorials/test-a-node-restful-api-with-mocha-and-chai",
+        //         "randomCharacters": 'abcd',
+        //     })
+        //     updatedUrl.save((err, updatedUrl) =>{
+        //         if (err) {
+        //             return console.log("Error occured while trying to save to DB")
+        //         }
+        //         updatedUrl = updatedUrl.randomCharacters
+        //     })
+        // })
+        it("it should  update a url given its identifier if the owner's token is the one being passed as an arguement to set()", (done) =>{
+            // console.log(updatedUrl)
             const url = {
-                url: "https://www.google.com",
+                url: "https://www.losales.herokuapp.com/community/tutorials/test-a-node-restful-api-with-mocha-and-chai",
     
             }
             chai.request(app)
-            .post('/api/shortener')
+            .put('/api/shortener/yFk9')
             .send(url)
-            .set('Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTAzMzQ4YTVmZDNlZDJiYTRlYmVhZWQiLCJpYXQiOjE2MjkxODY0MjksImV4cCI6MTYzMDA1MDQyOX0.98RgRq8b9MZUFVUOkmM4NWJDsNpw2OT4Ms6X1RYCHmI')
+            .set(
+                'Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTAzMzQ4YTVmZDNlZDJiYTRlYmVhZWQiLCJpYXQiOjE2MjkxODY0MjksImV4cCI6MTYzMDA1MDQyOX0.98RgRq8b9MZUFVUOkmM4NWJDsNpw2OT4Ms6X1RYCHmI'
+            )
             .end((err, res) =>{
-                res.should.have.status(201)
+                res.should.have.status(200)
                 res.body.should.be.a('object')
-                res.body.should.have.property('status').eql('created')
-                res.body.should.have.property('createdUrl').which.is.an('object').and.has.property('url');
-                res.body.should.have.property('createdUrl').which.is.an('object').and.has.property('randomCharacters');
+                res.body.should.have.property('message').eql('Url has been updated successfully')
+                res.body.should.have.property('url')
+            done()
+            })
+        })
+
+        it("it should  update a url given its identifier if the owner's token is the one being passed as an arguement to set()", (done) =>{
+            // console.log(updatedUrl)
+            const url = {
+                url: "https://www.losales.herokuapp.com/community/tutorials/test-a-node-restful-api-with-mocha-and-chai",
+    
+            }
+            chai.request(app)
+            .put('/api/shortener/yFk9')
+            .send(url)
+            .set(
+                'Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTA4OTQ3ZjllZWRjMTA2MWNkODE4ZmYiLCJpYXQiOjE2Mjk0NzE3MzAsImV4cCI6MTYzMDMzNTczMH0.qNJzqsrv0ldRv6s8ykY7f9YFc7jmO9XQBWG8KnrMzFo'
+            )
+            .end((err, res) =>{
+                res.should.have.status(401)
+                res.body.should.be.a('object')
+                res.body.should.have.property('error').eql('You cannot access this url as you were not the one that shortened it')
             done()
             })
         })
     })
-
-    describe('PATCH a loggedin user url', () =>{
-        it("it should  update a url given its identifier if the owner's token is the one being passed as an arguement to set()", (done) =>{
-            let updatedUrl = new Shortener({
-                url: "https://www.losales.herokuapp.com/community/tutorials/test-a-node-restful-api-with-mocha-and-chai",
-            })
-            updatedUrl.save(function(err, updatedUrl){
-                chai.request(app)
-                .put('/api/shortener/td6r')
-                .send(updatedUrl)
-                .set(
-                    'Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTAzMzQ4YTVmZDNlZDJiYTRlYmVhZWQiLCJpYXQiOjE2MjkxODY0MjksImV4cCI6MTYzMDA1MDQyOX0.98RgRq8b9MZUFVUOkmM4NWJDsNpw2OT4Ms6X1RYCHmI'
-                )
-                .end((err, res) =>{
-                    res.should.have.status(200)
-                    res.body.should.be.a('object')
-                    res.body.should.have.property('message').eql('Url has been updated successfully')
-                    res.body.should.have.property('url')
-                done()
-    
-                })
-            })
-        })
-    })
     
     
-    describe('PATCH a loggedin user url', () =>{
-        it("it should not update a url given its identifier if the owner's token is not the one being passed as an arguement to set()",(done) =>{
-            let updatedUrl = new Shortener({
-                url: "https://www.losales.herokuapp.com/community/tutorials/test-a-node-restful-api-with-mocha-and-chai",
-            })
-            updatedUrl.save(function(err, updatedUrl){
-                chai.request(app)
-                .put('/api/shortener/oACh')
-                .send({updatedUrl})
-                .set(
-                    'Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTA4OTQ3ZjllZWRjMTA2MWNkODE4ZmYiLCJpYXQiOjE2Mjk0NzE3MzAsImV4cCI6MTYzMDMzNTczMH0.qNJzqsrv0ldRv6s8ykY7f9YFc7jmO9XQBWG8KnrMzFo'
-                )
-                .end((err, res) =>{
-                    res.should.have.status(401)
-                    res.body.should.be.a('object')
-                    res.body.should.have.property('error').eql('You cannot access this url as you were not the one that shortened it')
-                done()
+    // describe('PATCH a loggedin user url', () =>{
+    //     it("it should not update a url given its identifier if the owner's token is not the one being passed as an arguement to set()",(done) =>{
+    //         let updatedUrl = new Shortener({
+    //             url: "https://www.losales.herokuapp.com/community/tutorials/test-a-node-restful-api-with-mocha-and-chai",
+    //         })
+    //         updatedUrl.save(function(err, updatedUrl){
+    //             chai.request(app)
+    //             .put('/api/shortener/oACh')
+    //             .send({updatedUrl})
+    //             .set(
+    //                 'Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTA4OTQ3ZjllZWRjMTA2MWNkODE4ZmYiLCJpYXQiOjE2Mjk0NzE3MzAsImV4cCI6MTYzMDMzNTczMH0.qNJzqsrv0ldRv6s8ykY7f9YFc7jmO9XQBWG8KnrMzFo'
+    //             )
+    //             .end((err, res) =>{
+    //                 res.should.have.status(401)
+    //                 res.body.should.be.a('object')
+    //                 res.body.should.have.property('error').eql('You cannot access this url as you were not the one that shortened it')
+    //             done()
     
-                })
-            })
-        })
-    })
+    //             })
+    //         })
+    //     })
+    // })
     
     
     describe('DELETE a loggedin user url', () =>{
         it("it should  delete a url given its identifier if the owner's token is the one being passed as an arguement to set()", (done) =>{
             chai.request(app)
-            .delete('/api/shortener/suuR')
+            .delete('/api/shortener/1eyo')
             .set(
                 'Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTAzMzQ4YTVmZDNlZDJiYTRlYmVhZWQiLCJpYXQiOjE2MjkxODY0MjksImV4cCI6MTYzMDA1MDQyOX0.98RgRq8b9MZUFVUOkmM4NWJDsNpw2OT4Ms6X1RYCHmI'
             )
@@ -170,7 +199,7 @@ describe("URL shorteners", () =>{
     describe('DO NOT DELETE a loggedin user url', () =>{
         it("it should not delete a url given its identifier if the owner's token is not the one being passed as an arguement to set()", (done) =>{
             chai.request(app)
-            .delete('/api/shortener/uJtf')
+            .delete('/api/shortener/r4xb')
             .set(
                 'Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTA4OTQ3ZjllZWRjMTA2MWNkODE4ZmYiLCJpYXQiOjE2Mjk0NzE3MzAsImV4cCI6MTYzMDMzNTczMH0.qNJzqsrv0ldRv6s8ykY7f9YFc7jmO9XQBWG8KnrMzFo'
             )

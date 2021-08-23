@@ -24,23 +24,22 @@ const createShortenedUrlController = async(req, res) =>{
         }
         const checkUrl = validator.isURL(req.body.url)
     
-        if (checkUrl === true){
-            const url = new Url({
-                url: req.body.url,
-                randomCharacters: randomCharacter(),
-                owner: req.user._id
-            })
-        
-            const createdUrl = await url.save()
-            await deleteUrlFromCache('url')
-            res.status(201).json({
-                status: 'created', createdUrl
-            })
-        } else {
+        if (checkUrl !== true){
             res.status(400).json({
                 status: 'error', message: 'Invalid url'
             })
         }
+        const url = new Url({
+            url: req.body.url,
+            randomCharacters: randomCharacter(),
+            owner: req.user._id
+        })
+    
+        const createdUrl = await url.save()
+        await deleteUrlFromCache('url')
+        res.status(201).json({
+            status: 'created', createdUrl
+        })
 
     } catch(err){
         res.status(400).json({

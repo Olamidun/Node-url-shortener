@@ -1,0 +1,2 @@
+EMAIL_PASSWORD=vdspbeysykoywvbn
+EMAIL_USER=kolapoolamidun@gmail.com
