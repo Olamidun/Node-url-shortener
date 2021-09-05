@@ -9,56 +9,59 @@ chai.should();
 chai.use(chaiHttp)
 
 describe("URL shorteners", () =>{
-    describe('/POST url', () =>{
-        it('it should post a url', (done) =>{
-            const url = {
-                url: "https://www.google.com",
+
+    /**
+     * Test for POST route which creates a shortened url
+     */
+    // describe('/POST url', () =>{
+    //     it('it should post a url', (done) =>{
+    //         const url = {
+    //             url: "https://www.google.com",
     
-            }
+    //         }
+    //         chai.request(app)
+    //         .post('/api/shortener')
+    //         .send(url)
+    //         .set('Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTM1MDk3YTQ1ZDk5NzI1NzBhMDMxOTMiLCJpYXQiOjE2MzA4NjU4MTAsImV4cCI6MTYzMTcyOTgxMH0.EMEe3S-eyve7h2XRZkZLAdN8kF8rReK8u6lOZhU7Kxg')
+    //         .end((err, res) =>{
+    //             res.should.have.status(201)
+    //             res.body.should.be.a('object')
+    //             res.body.should.have.property('status').eql('created')
+    //             res.body.should.have.property('createdUrl').which.is.an('object').and.has.property('url');
+    //             res.body.should.have.property('createdUrl').which.is.an('object').and.has.property('randomCharacters');
+    //         done()
+    //         })
+    //     })
+    // })
+
+    /**
+     * Test for GET route which gets a particular shortened URL given its identifier
+     */
+    describe('/GET/api/shortener/:identifier', () =>{
+        it('it should get a url with the given identifier', (done) =>{
+    
             chai.request(app)
-            .post('/api/shortener')
-            .send(url)
-            .set('Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTAzMzQ4YTVmZDNlZDJiYTRlYmVhZWQiLCJpYXQiOjE2MjkxODY0MjksImV4cCI6MTYzMDA1MDQyOX0.98RgRq8b9MZUFVUOkmM4NWJDsNpw2OT4Ms6X1RYCHmI')
+            .get('/api/shortener/dul6')
+            .set('Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTM1MGI1ZGI3MDhjYjFiMjRhM2VjYzIiLCJpYXQiOjE2MzA4NjcxNTgsImV4cCI6MTYzMTczMTE1OH0.YKD5dDj_1i8ucUzemyCw82Om0hXF1Cm5nXsdAnuWylI')
             .end((err, res) =>{
-                res.should.have.status(201)
-                res.body.should.be.a('object')
-                res.body.should.have.property('status').eql('created')
-                res.body.should.have.property('createdUrl').which.is.an('object').and.has.property('url');
-                res.body.should.have.property('createdUrl').which.is.an('object').and.has.property('randomCharacters');
-            done()
+                res.should.have.status(200);
+                res.body.should.be.a('object');
+                res.body.should.have.property('status').eql('fetched')
+                res.body.should.have.property('url').which.is.a('object').and.has.property('randomCharacters').length(4);
+            done();
             })
         })
     })
 
-    describe('/GET/api/shortener/:identifier', () =>{
-        it('it should get a url with the given identifier', (done) =>{
-    
-            let url = new Shortener({
-                url: 'https://www.losales.herokuapp.com/community/tutorials/test-a-node-restful-api-with-mocha-and-chai',
-                "randomCharacters": "x3og"
-            })
-            url.save((err, url) =>{
-                console.log(url)
-                chai.request(app)
-                .get('/api/shortener/' + url.randomCharacters)
-                .set('Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTAzMzQ4YTVmZDNlZDJiYTRlYmVhZWQiLCJpYXQiOjE2MjkxODY0MjksImV4cCI6MTYzMDA1MDQyOX0.98RgRq8b9MZUFVUOkmM4NWJDsNpw2OT4Ms6X1RYCHmI')
-                .end((err, res) =>{
-                    res.should.have.status(200);
-                    res.body.should.be.a('object');
-                    res.body.should.have.property('status').eql('fetched')
-                    res.body.should.have.property('url').which.is.a('object').and.has.property('randomCharacters').length(4);
-                done();
-                })
-            })
-            //Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTAzMzQ4YTVmZDNlZDJiYTRlYmVhZWQiLCJpYXQiOjE2MjkxODY0MjksImV4cCI6MTYzMDA1MDQyOX0.98RgRq8b9MZUFVUOkmM4NWJDsNpw2OT4Ms6X1RYCHmI
-        })
-    })
-    
+
+    /**
+     * Test to ensure the GET route does not return the right response if the wrong identifier is passed
+     */
     describe('/GET/api/shortener/:identifier', () =>{
         it("it should not get a url if the wrong identifier is passed in", (done) =>{
             chai.request(app)
             .get('/api/shortener/SU5D')
-            .set('Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTA4OTQ3ZjllZWRjMTA2MWNkODE4ZmYiLCJpYXQiOjE2Mjk0NzE3MzAsImV4cCI6MTYzMDMzNTczMH0.qNJzqsrv0ldRv6s8ykY7f9YFc7jmO9XQBWG8KnrMzFo')
+            .set('Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTM1MGI1ZGI3MDhjYjFiMjRhM2VjYzIiLCJpYXQiOjE2MzA4NjcxNTgsImV4cCI6MTYzMTczMTE1OH0.YKD5dDj_1i8ucUzemyCw82Om0hXF1Cm5nXsdAnuWylI')
             .end((err, res) =>{
                 res.should.have.status(400);
                 res.body.should.be.a('object');
@@ -69,12 +72,16 @@ describe("URL shorteners", () =>{
         })
     })
 
+    /**
+    * Test for GET route which gets all the shortened url and other information for a logged in user
+    */
     describe('/GET/api/shortener', () =>{
         it("it should get all urls of a user if they url(s) created", (done) =>{
             chai.request(app)
             .get('/api/shortener')
-            .set('Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTAzMzQ4YTVmZDNlZDJiYTRlYmVhZWQiLCJpYXQiOjE2MjkxODY0MjksImV4cCI6MTYzMDA1MDQyOX0.98RgRq8b9MZUFVUOkmM4NWJDsNpw2OT4Ms6X1RYCHmI')
+            .set('Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTM1MGI1ZGI3MDhjYjFiMjRhM2VjYzIiLCJpYXQiOjE2MzA4NjcxNTgsImV4cCI6MTYzMTczMTE1OH0.YKD5dDj_1i8ucUzemyCw82Om0hXF1Cm5nXsdAnuWylI')
             .end((err, res) =>{
+                console.log(err)
                 res.should.have.status(200);
                 res.body.should.be.a('object');
                 res.body.should.have.property('url').which.is.an('array')
@@ -84,34 +91,29 @@ describe("URL shorteners", () =>{
         })
     })
     
+    /**
+    * Test for GET route which returns a message telling the use they do not have any shortened url if they haven't created any
+    */
     describe('/GET/api/shortener', () =>{
         it("it should return a message which will be specified below if a user does not have any url created", (done) =>{
             chai.request(app)
             .get('/api/shortener')
-            .set('Authorization', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTA4OTQ3ZjllZWRjMTA2MWNkODE4ZmYiLCJpYXQiOjE2Mjk0NzE3MzAsImV4cCI6MTYzMDMzNTczMH0.qNJzqsrv0ldRv6s8ykY7f9YFc7jmO9XQBWG8KnrMzFo')
+            .set('Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTM1MDk3YTQ1ZDk5NzI1NzBhMDMxOTMiLCJpYXQiOjE2MzA4Njg5NDIsImV4cCI6MTYzMTczMjk0Mn0.yKbWuZmW4zrTaxsCX_crNHfNOp42lsoY5T1C8L0n6EY')
             .end((err, res) =>{
                 res.should.have.status(200);
                 res.body.should.be.a('object');
                 res.body.should.have.property('message').eql('You do not have any URL created')
             done();
             })
+            // eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTM1MGI1ZGI3MDhjYjFiMjRhM2VjYzIiLCJpYXQiOjE2MzA4NjcxNTgsImV4cCI6MTYzMTczMTE1OH0.YKD5dDj_1i8ucUzemyCw82Om0hXF1Cm5nXsdAnuWylI
         })
     })
 
-    describe('PATCH a loggedin user url', () =>{
-        // let updatedUrl;
-        // beforeEach(() =>{
-        //     updatedUrl = new Shortener({
-        //         url: "https://www.losales.herokuapp.com/community/tutorials/test-a-node-restful-api-with-mocha-and-chai",
-        //         "randomCharacters": 'abcd',
-        //     })
-        //     updatedUrl.save((err, updatedUrl) =>{
-        //         if (err) {
-        //             return console.log("Error occured while trying to save to DB")
-        //         }
-        //         updatedUrl = updatedUrl.randomCharacters
-        //     })
-        // })
+    /**
+    * Test for PUT route which is used to edit the URL that was shortened.
+    */
+    describe('PUT a loggedin user url', () =>{
+
         it("it should  update a url given its identifier if the owner's token is the one being passed as an arguement to set()", (done) =>{
             // console.log(updatedUrl)
             const url = {
@@ -119,10 +121,10 @@ describe("URL shorteners", () =>{
     
             }
             chai.request(app)
-            .put('/api/shortener/yFk9')
+            .put('/api/shortener/bofv')
             .send(url)
             .set(
-                'Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTAzMzQ4YTVmZDNlZDJiYTRlYmVhZWQiLCJpYXQiOjE2MjkxODY0MjksImV4cCI6MTYzMDA1MDQyOX0.98RgRq8b9MZUFVUOkmM4NWJDsNpw2OT4Ms6X1RYCHmI'
+                'Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTM1MGI1ZGI3MDhjYjFiMjRhM2VjYzIiLCJpYXQiOjE2MzA4NjcxNTgsImV4cCI6MTYzMTczMTE1OH0.YKD5dDj_1i8ucUzemyCw82Om0hXF1Cm5nXsdAnuWylI'
             )
             .end((err, res) =>{
                 res.should.have.status(200)
@@ -133,17 +135,20 @@ describe("URL shorteners", () =>{
             })
         })
 
-        it("it should  update a url given its identifier if the owner's token is the one being passed as an arguement to set()", (done) =>{
+        /**
+        * Test for PUT route which returns an error message if the person that shortened it is not the one trying to update it.
+        */
+        it("it should not update a url given its identifier if the owner's token is not the one being passed as an arguement to set()", (done) =>{
             // console.log(updatedUrl)
             const url = {
-                url: "https://www.losales.herokuapp.com/community/tutorials/test-a-node-restful-api-with-mocha-and-chai",
+                url: "https://www.losales.com/community/tutorials/test-a-node-restful-api-with-mocha-and-chai",
     
             }
             chai.request(app)
-            .put('/api/shortener/yFk9')
+            .put('/api/shortener/8BIk')
             .send(url)
             .set(
-                'Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTA4OTQ3ZjllZWRjMTA2MWNkODE4ZmYiLCJpYXQiOjE2Mjk0NzE3MzAsImV4cCI6MTYzMDMzNTczMH0.qNJzqsrv0ldRv6s8ykY7f9YFc7jmO9XQBWG8KnrMzFo'
+                'Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTM1MDk3YTQ1ZDk5NzI1NzBhMDMxOTMiLCJpYXQiOjE2MzA4Njg5NDIsImV4cCI6MTYzMTczMjk0Mn0.yKbWuZmW4zrTaxsCX_crNHfNOp42lsoY5T1C8L0n6EY'
             )
             .end((err, res) =>{
                 res.should.have.status(401)
@@ -154,39 +159,20 @@ describe("URL shorteners", () =>{
         })
     })
     
-    
-    // describe('PATCH a loggedin user url', () =>{
-    //     it("it should not update a url given its identifier if the owner's token is not the one being passed as an arguement to set()",(done) =>{
-    //         let updatedUrl = new Shortener({
-    //             url: "https://www.losales.herokuapp.com/community/tutorials/test-a-node-restful-api-with-mocha-and-chai",
-    //         })
-    //         updatedUrl.save(function(err, updatedUrl){
-    //             chai.request(app)
-    //             .put('/api/shortener/oACh')
-    //             .send({updatedUrl})
-    //             .set(
-    //                 'Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTA4OTQ3ZjllZWRjMTA2MWNkODE4ZmYiLCJpYXQiOjE2Mjk0NzE3MzAsImV4cCI6MTYzMDMzNTczMH0.qNJzqsrv0ldRv6s8ykY7f9YFc7jmO9XQBWG8KnrMzFo'
-    //             )
-    //             .end((err, res) =>{
-    //                 res.should.have.status(401)
-    //                 res.body.should.be.a('object')
-    //                 res.body.should.have.property('error').eql('You cannot access this url as you were not the one that shortened it')
-    //             done()
-    
-    //             })
-    //         })
-    //     })
-    // })
-    
-    
+    /**
+    * Test for DELETE route which is used to delete a url from the db provided the owner of that url is the one trying to delete it.
+    */
     describe('DELETE a loggedin user url', () =>{
         it("it should  delete a url given its identifier if the owner's token is the one being passed as an arguement to set()", (done) =>{
             chai.request(app)
-            .delete('/api/shortener/1eyo')
+            .delete('/api/shortener/uqwN')
             .set(
-                'Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTAzMzQ4YTVmZDNlZDJiYTRlYmVhZWQiLCJpYXQiOjE2MjkxODY0MjksImV4cCI6MTYzMDA1MDQyOX0.98RgRq8b9MZUFVUOkmM4NWJDsNpw2OT4Ms6X1RYCHmI'
+                'Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTM1MGI1ZGI3MDhjYjFiMjRhM2VjYzIiLCJpYXQiOjE2MzA4NjcxNTgsImV4cCI6MTYzMTczMTE1OH0.YKD5dDj_1i8ucUzemyCw82Om0hXF1Cm5nXsdAnuWylI'
             )
             .end((err, res) =>{
+                if(err){
+                    console.log(err)
+                }
                 res.should.have.status(200)
                 res.body.should.be.a('object')
                 res.body.should.have.property('message').eql('Url deleted!')
@@ -195,15 +181,41 @@ describe("URL shorteners", () =>{
             })
         })
     })
+
+    /**
+    * Test for DELETE route which is used to delete a url from the db provided the owner of that url is the one trying to delete it.
+    */
+    describe('RETURN an error', () =>{
+        it("it should return an error if the url a user wants to delete is non-existent", (done) =>{
+            chai.request(app)
+            .delete('/api/shortener/XU4Z')
+            .set(
+                'Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTM1MGI1ZGI3MDhjYjFiMjRhM2VjYzIiLCJpYXQiOjE2MzA4NjcxNTgsImV4cCI6MTYzMTczMTE1OH0.YKD5dDj_1i8ucUzemyCw82Om0hXF1Cm5nXsdAnuWylI'
+            )
+            .end((err, res) =>{
+                res.should.have.status(200)
+                res.body.should.be.a('object')
+                res.body.should.have.property('err')
+            done()
     
+            })
+        })
+    })
+    
+    /**
+    * Test for DELETE route which gives an error message if the person trying to delete the url is not the person that created it.
+    */
     describe('DO NOT DELETE a loggedin user url', () =>{
         it("it should not delete a url given its identifier if the owner's token is not the one being passed as an arguement to set()", (done) =>{
             chai.request(app)
-            .delete('/api/shortener/r4xb')
+            .delete('/api/shortener/GeY0')
             .set(
-                'Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTA4OTQ3ZjllZWRjMTA2MWNkODE4ZmYiLCJpYXQiOjE2Mjk0NzE3MzAsImV4cCI6MTYzMDMzNTczMH0.qNJzqsrv0ldRv6s8ykY7f9YFc7jmO9XQBWG8KnrMzFo'
+                'Authorization', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTM1MDk3YTQ1ZDk5NzI1NzBhMDMxOTMiLCJpYXQiOjE2MzA4Njg5NDIsImV4cCI6MTYzMTczMjk0Mn0.yKbWuZmW4zrTaxsCX_crNHfNOp42lsoY5T1C8L0n6EY'
             )
             .end((err, res) =>{
+                if(err){
+                    console.log(err)
+                }
                 res.should.have.status(401)
                 res.body.should.be.a('object')
                 res.body.should.have.property('error').eql('You cannot access this url as you were not the one that shortened it')
@@ -212,11 +224,8 @@ describe("URL shorteners", () =>{
             })
         })
     })
-
-    
 })
 
-// For testing single url endpoint
 
 
 

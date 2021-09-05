@@ -65,17 +65,17 @@ const loggedInUserUrlsController = async(req, res) =>{
                     return {err}
                 }
                 if(data) {
-                    res.status(200).send(JSON.parse(data))
+                    res.status(200).json(JSON.parse(data))
                 } else {
                     client.set('url', JSON.stringify({url, numberOfUrl}))
                     res.status(200).json({url, numberOfUrl})
                 }
             })
         }catch(err){
-            res.status(500).send({error: err.message})
+            res.status(500).json({error: err.message})
         }
     } else {
-        res.status(200).send({
+        res.status(200).json({
             message: "You do not have any URL created"
         })
     }
@@ -112,15 +112,17 @@ const deleteUrlController = async(req, res) =>{
     
     const url = await Url.findOne({randomCharacters: req.params.identifier})
     try{
-        if (req.user._id == url.owner._id){
-            await url.delete()
-            await deleteUrlFromCache('url')
-            res.json({
-                message: 'Url deleted!'
-            })
-        } else {
+        if (req.user._id != url.owner._id){
+
             res.status(401).json({error: 'You cannot access this url as you were not the one that shortened it'})
+            
         }
+        await url.delete()
+        await deleteUrlFromCache('url')
+        res.json({
+            message: 'Url deleted!'
+        })
+            
     } catch(err){
         res.json({
             err
