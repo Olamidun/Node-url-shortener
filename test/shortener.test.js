@@ -105,7 +105,6 @@ describe("URL shorteners", () =>{
                 res.body.should.have.property('message').eql('You do not have any URL created')
             done();
             })
-            // eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTM1MGI1ZGI3MDhjYjFiMjRhM2VjYzIiLCJpYXQiOjE2MzA4NjcxNTgsImV4cCI6MTYzMTczMTE1OH0.YKD5dDj_1i8ucUzemyCw82Om0hXF1Cm5nXsdAnuWylI
         })
     })
 
