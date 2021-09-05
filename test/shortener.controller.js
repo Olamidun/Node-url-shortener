@@ -165,7 +165,7 @@ describe("URL shorteners", () =>{
     describe('DELETE a loggedin user url', () =>{
         it("it should  delete a url given its identifier if the owner's token is the one being passed as an arguement to set()", (done) =>{
             chai.request(app)
-            .delete('/api/shortener/uqwN')
+            .delete('/api/shortener/Stkm')
             .set(
                 'Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTM1MGI1ZGI3MDhjYjFiMjRhM2VjYzIiLCJpYXQiOjE2MzA4NjcxNTgsImV4cCI6MTYzMTczMTE1OH0.YKD5dDj_1i8ucUzemyCw82Om0hXF1Cm5nXsdAnuWylI'
             )
@@ -208,9 +208,9 @@ describe("URL shorteners", () =>{
     describe('DO NOT DELETE a loggedin user url', () =>{
         it("it should not delete a url given its identifier if the owner's token is not the one being passed as an arguement to set()", (done) =>{
             chai.request(app)
-            .delete('/api/shortener/GeY0')
+            .delete('/api/shortener/yuLZ')
             .set(
-                'Authorization', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTM1MDk3YTQ1ZDk5NzI1NzBhMDMxOTMiLCJpYXQiOjE2MzA4Njg5NDIsImV4cCI6MTYzMTczMjk0Mn0.yKbWuZmW4zrTaxsCX_crNHfNOp42lsoY5T1C8L0n6EY'
+                'Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTM1MDk3YTQ1ZDk5NzI1NzBhMDMxOTMiLCJpYXQiOjE2MzA4Njg5NDIsImV4cCI6MTYzMTczMjk0Mn0.yKbWuZmW4zrTaxsCX_crNHfNOp42lsoY5T1C8L0n6EY'
             )
             .end((err, res) =>{
                 if(err){
