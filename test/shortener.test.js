@@ -13,26 +13,26 @@ describe("URL shorteners", () =>{
     /**
      * Test for POST route which creates a shortened url
      */
-    // describe('/POST url', () =>{
-    //     it('it should post a url', (done) =>{
-    //         const url = {
-    //             url: "https://www.google.com",
+    describe('/POST url', () =>{
+        it('it should post a url', (done) =>{
+            const url = {
+                url: "https://www.google.com",
     
-    //         }
-    //         chai.request(app)
-    //         .post('/api/shortener')
-    //         .send(url)
-    //         .set('Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTM1MDk3YTQ1ZDk5NzI1NzBhMDMxOTMiLCJpYXQiOjE2MzA4NjU4MTAsImV4cCI6MTYzMTcyOTgxMH0.EMEe3S-eyve7h2XRZkZLAdN8kF8rReK8u6lOZhU7Kxg')
-    //         .end((err, res) =>{
-    //             res.should.have.status(201)
-    //             res.body.should.be.a('object')
-    //             res.body.should.have.property('status').eql('created')
-    //             res.body.should.have.property('createdUrl').which.is.an('object').and.has.property('url');
-    //             res.body.should.have.property('createdUrl').which.is.an('object').and.has.property('randomCharacters');
-    //         done()
-    //         })
-    //     })
-    // })
+            }
+            chai.request(app)
+            .post('/api/shortener')
+            .send(url)
+            .set('Authorization', `Bearer ${process.env.TEST_USER_TOKEN_TWO}`)
+            .end((err, res) =>{
+                res.should.have.status(201)
+                res.body.should.be.a('object')
+                res.body.should.have.property('status').eql('created')
+                res.body.should.have.property('createdUrl').which.is.an('object').and.has.property('url');
+                res.body.should.have.property('createdUrl').which.is.an('object').and.has.property('randomCharacters');
+            done()
+            })
+        })
+    })
 
     /**
      * Test for GET route which gets a particular shortened URL given its identifier
@@ -42,7 +42,7 @@ describe("URL shorteners", () =>{
     
             chai.request(app)
             .get('/api/shortener/dul6')
-            .set('Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTM1MGI1ZGI3MDhjYjFiMjRhM2VjYzIiLCJpYXQiOjE2MzA4NjcxNTgsImV4cCI6MTYzMTczMTE1OH0.YKD5dDj_1i8ucUzemyCw82Om0hXF1Cm5nXsdAnuWylI')
+            .set('Authorization', `Bearer ${process.env.TEST_USER_TOKEN_TWO}`)
             .end((err, res) =>{
                 res.should.have.status(200);
                 res.body.should.be.a('object');
@@ -61,7 +61,7 @@ describe("URL shorteners", () =>{
         it("it should not get a url if the wrong identifier is passed in", (done) =>{
             chai.request(app)
             .get('/api/shortener/SU5D')
-            .set('Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTM1MGI1ZGI3MDhjYjFiMjRhM2VjYzIiLCJpYXQiOjE2MzA4NjcxNTgsImV4cCI6MTYzMTczMTE1OH0.YKD5dDj_1i8ucUzemyCw82Om0hXF1Cm5nXsdAnuWylI')
+            .set('Authorization', `Bearer ${process.env.TEST_USER_TOKEN_TWO}`)
             .end((err, res) =>{
                 res.should.have.status(400);
                 res.body.should.be.a('object');
@@ -79,7 +79,7 @@ describe("URL shorteners", () =>{
         it("it should get all urls of a user if they url(s) created", (done) =>{
             chai.request(app)
             .get('/api/shortener')
-            .set('Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTM1MGI1ZGI3MDhjYjFiMjRhM2VjYzIiLCJpYXQiOjE2MzA4NjcxNTgsImV4cCI6MTYzMTczMTE1OH0.YKD5dDj_1i8ucUzemyCw82Om0hXF1Cm5nXsdAnuWylI')
+            .set('Authorization', `Bearer ${process.env.TEST_USER_TOKEN_TWO}`)
             .end((err, res) =>{
                 console.log(err)
                 res.should.have.status(200);
@@ -98,7 +98,7 @@ describe("URL shorteners", () =>{
         it("it should return a message which will be specified below if a user does not have any url created", (done) =>{
             chai.request(app)
             .get('/api/shortener')
-            .set('Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTM1MDk3YTQ1ZDk5NzI1NzBhMDMxOTMiLCJpYXQiOjE2MzA4Njg5NDIsImV4cCI6MTYzMTczMjk0Mn0.yKbWuZmW4zrTaxsCX_crNHfNOp42lsoY5T1C8L0n6EY')
+            .set('Authorization', `Bearer ${process.env.TEST_USER_TOKEN_ONE}`)
             .end((err, res) =>{
                 res.should.have.status(200);
                 res.body.should.be.a('object');
@@ -124,7 +124,7 @@ describe("URL shorteners", () =>{
             .put('/api/shortener/bofv')
             .send(url)
             .set(
-                'Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTM1MGI1ZGI3MDhjYjFiMjRhM2VjYzIiLCJpYXQiOjE2MzA4NjcxNTgsImV4cCI6MTYzMTczMTE1OH0.YKD5dDj_1i8ucUzemyCw82Om0hXF1Cm5nXsdAnuWylI'
+                'Authorization', `Bearer ${process.env.TEST_USER_TOKEN_TWO}`
             )
             .end((err, res) =>{
                 res.should.have.status(200)
@@ -148,7 +148,7 @@ describe("URL shorteners", () =>{
             .put('/api/shortener/8BIk')
             .send(url)
             .set(
-                'Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTM1MDk3YTQ1ZDk5NzI1NzBhMDMxOTMiLCJpYXQiOjE2MzA4Njg5NDIsImV4cCI6MTYzMTczMjk0Mn0.yKbWuZmW4zrTaxsCX_crNHfNOp42lsoY5T1C8L0n6EY'
+                'Authorization', `Bearer ${process.env.TEST_USER_TOKEN_ONE}`
             )
             .end((err, res) =>{
                 res.should.have.status(401)
@@ -167,7 +167,7 @@ describe("URL shorteners", () =>{
             chai.request(app)
             .delete('/api/shortener/Stkm')
             .set(
-                'Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTM1MGI1ZGI3MDhjYjFiMjRhM2VjYzIiLCJpYXQiOjE2MzA4NjcxNTgsImV4cCI6MTYzMTczMTE1OH0.YKD5dDj_1i8ucUzemyCw82Om0hXF1Cm5nXsdAnuWylI'
+                'Authorization', `Bearer ${process.env.TEST_USER_TOKEN_TWO}`
             )
             .end((err, res) =>{
                 if(err){
@@ -190,7 +190,7 @@ describe("URL shorteners", () =>{
             chai.request(app)
             .delete('/api/shortener/XU4Z')
             .set(
-                'Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTM1MGI1ZGI3MDhjYjFiMjRhM2VjYzIiLCJpYXQiOjE2MzA4NjcxNTgsImV4cCI6MTYzMTczMTE1OH0.YKD5dDj_1i8ucUzemyCw82Om0hXF1Cm5nXsdAnuWylI'
+                'Authorization', `Bearer ${process.env.TEST_USER_TOKEN_TWO}`
             )
             .end((err, res) =>{
                 res.should.have.status(200)
@@ -210,7 +210,7 @@ describe("URL shorteners", () =>{
             chai.request(app)
             .delete('/api/shortener/yuLZ')
             .set(
-                'Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTM1MDk3YTQ1ZDk5NzI1NzBhMDMxOTMiLCJpYXQiOjE2MzA4Njg5NDIsImV4cCI6MTYzMTczMjk0Mn0.yKbWuZmW4zrTaxsCX_crNHfNOp42lsoY5T1C8L0n6EY'
+                'Authorization', `Bearer ${process.env.TEST_USER_TOKEN_ONE}`
             )
             .end((err, res) =>{
                 if(err){
