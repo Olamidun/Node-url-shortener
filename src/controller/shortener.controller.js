@@ -6,8 +6,6 @@ const redis = require('redis')
 
 const client = redis.createClient()
 
-
-
 const createShortenedUrlController = async(req, res) =>{
 
     // function that creates random 4 letter string to be used as identifier for shortened urls.

@@ -26,12 +26,7 @@ describe('Authentication', function(){
                 // res.body.should.be.a('object')
                 // // res.body.should.have.property('message').eql('User created successfully')
     
-                // chai.request(app)
-                // .post('/api/auth/login')
-                // .send({
-                //     "email": "example@gmail.com",
-                //     "password": "vision2021"
-                // })
+                
                 done()
             })
         })
@@ -52,5 +47,22 @@ describe('Authentication', function(){
             })
             done()
         })
+    })
+
+    describe('POST/ api/auth/requestPasswordReset', () => {
+        it('Should send password reset instruction to the email address provided', (done) =>{
+            chai.request(app)
+            .post('/api/auth/requestPasswordReset')
+            .send({
+                "email": "kolapoolamidun@gmail.com"
+            })
+            .end((err, res) =>{
+                res.should.have.status(200)
+                res.body.should.be.a('object')
+                res.body.should.have.property('status').which.is.a('object').and.has.property('message').eql('A mail containing reset instructions is on its way to you')
+            })
+            done()
+        })
+
     })
 })
