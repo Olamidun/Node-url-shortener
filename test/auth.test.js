@@ -14,48 +14,48 @@ describe('Authentication', function(){
     /**
     * Test for for the route that handles registration of users.
     */
-    // describe('/POST api/auth/register', ()=>{
-    //     it('Should create a user if the write request body is sent', function(done){
-    //         chai.request(app)
-    //         .post('/api/auth/register')
-    //         .send({
-    //             "email": "example7@gmail.com",
-    //             "password": "vision2021"
-    //         })
-    //         .end(function(err, res){
-    //             if(err){
-    //                 console.log(err)
-    //             }
-    //             res.should.have.status(201)
-    //             // res.body.should.be.a('object')
-    //             // // res.body.should.have.property('message').eql('User created successfully')
+    describe('/POST api/auth/register', ()=>{
+        it('Should create a user if the write request body is sent', function(done){
+            chai.request(app)
+            .post('/api/auth/register')
+            .send({
+                "email": "example7@gmail.com",
+                "password": "vision2021"
+            })
+            .end(function(err, res){
+                if(err){
+                    console.log(err)
+                }
+                res.should.have.status(201)
+                // res.body.should.be.a('object')
+                // // res.body.should.have.property('message').eql('User created successfully')
     
                 
-    //             done()
-    //         })
-    //     })
-    // })
+                done()
+            })
+        })
+    })
     
 
     /**
     * Test for for the route that handles user login.
     */
-    // describe('POST/ api/auth/login', ()=>{
-    //     it('Should login a user and return auth token and a message', (done) =>{
-    //         chai.request(app)
-    //         .post('/api/auth/login')
-    //         .send({
-    //             "email": "example@gmail.com",
-    //             "password": "vision2021"
-    //         })
-    //         .end(function(err, res){
-    //             res.should.have.status(200)
-    //             res.body.should.be.a('object')
-    //             res.body.should.have.property('message').eql('User logged in successfully')
-    //         })
-    //         done()
-    //     })
-    // })
+    describe('POST/ api/auth/login', ()=>{
+        it('Should login a user and return auth token and a message', (done) =>{
+            chai.request(app)
+            .post('/api/auth/login')
+            .send({
+                "email": "example@gmail.com",
+                "password": "vision2021"
+            })
+            .end(function(err, res){
+                res.should.have.status(200)
+                res.body.should.be.a('object')
+                res.body.should.have.property('message').eql('User logged in successfully')
+            })
+            done()
+        })
+    })
 
     /**
     * Test for the route that handles sending of password reset email to users.
