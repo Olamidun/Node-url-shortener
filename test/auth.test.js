@@ -27,10 +27,8 @@ describe('Authentication', function(){
                     console.log(err)
                 }
                 res.should.have.status(201)
-                // res.body.should.be.a('object')
-                // // res.body.should.have.property('message').eql('User created successfully')
-    
-                
+                res.body.should.be.a('object')
+                res.body.should.have.property('message').eql('User created successfully')
                 done()
             })
         })
@@ -71,7 +69,7 @@ describe('Authentication', function(){
                 res.should.have.status(200)
                 res.body.should.be.a('object')
                 res.body.should.have.property('success').eql(true)
-                res.body.should.have.property('message').eql('A mail containing reset instructions is on its way to you')
+                res.body.should.have.property('message').eql('If the Email address you specify exists in our system, we have sent password reset instructions to it!')
             })
             done()
         })
@@ -93,5 +91,20 @@ describe('Authentication', function(){
         })
     })
 
+    describe('RETURN a 404 error if an invalid email format is provided', () => {
+        it('Should return a response that says that the email is invalid', (done) =>{
+            chai.request(app)
+            .post('/api/auth/requestPasswordReset')
+            .send({
+                "email": "kolapoolamidungmail.com"
+            })
+            .end((err, res) =>{
+                res.should.have.status(400)
+                res.body.should.be.a('object')
+                res.body.should.have.property('error').eql('\"email\" must be a valid email')
+            })
+            done()
+        })
+    })
     
 })

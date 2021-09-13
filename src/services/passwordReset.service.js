@@ -6,6 +6,7 @@ const sendEmail = require('../utils/sendEmail')
 
 
 const requestpasswordReset = async (email) =>{
+    
     const user = await User.findOne({ email })
 
     if (!user) {
@@ -28,7 +29,7 @@ const requestpasswordReset = async (email) =>{
     sendEmail(user.email, "Password Reset Request", {link: link})
     return {
         success: true,
-        message: 'A mail containing reset instructions is on its way to you',
+        message: 'If the Email address you specify exists in our system, we have sent password reset instructions',
         link};
 }
 
