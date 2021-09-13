@@ -65,9 +65,9 @@ const requestResetPasswordController = async(req, res) =>{
 const resetPasswordController = async(req, res) =>{
     if (req.body.password == req.body.repeatPassword){
         const resetPasswordService = await resetPassword(req.body.userId, req.body.token, req.body.password)
-        res.status(200).json({
-            status: resetPasswordService
-        })
+        res.status(400).send(
+            resetPasswordService
+        )
     } else {
         res.status(400).json({
             message: "Passwords do not match!"

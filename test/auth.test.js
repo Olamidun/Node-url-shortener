@@ -107,4 +107,22 @@ describe('Authentication', function(){
         })
     })
     
+    describe('POST/ api/auth/resetPassword', () => {
+        it('Should not change the old password to the new one the user supplied if an expired token is used', (done) =>{
+            chai.request(app)
+            .post('/api/auth/resetPassword')
+            .send({
+                "userId": "6108947f9eedc1061cd818ff",
+                "token": "06bceb79eafbf7af6d8085b13776fe044ed855a8b5bf69f7cba4d7c3921af555",
+                "password": "09/may/1999!",
+                "repeatPassword": "09/may/1999!"
+            })
+            .end((err, res) =>{
+                res.should.have.status(400)
+                res.body.should.be.a('object')
+                res.body.should.have.property('error').eql('Invalid or expired password reset token!')
+            })
+            done()
+        })
+    })
 })
