@@ -1,25 +1,27 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
-const Schema = mongoose.Schema
+const { Schema } = mongoose.Schema;
 
 // Token schema for password reset
 const tokenSchema = new Schema({
-    userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: "User"
-    },
-    token: {
-        type: String,
-        required: true,
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now,
-        expires: 3600 // expiry time for the token, once 3600 elapses, the token gets deleted from the db
-    }
-})
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: 'User',
+  },
+  token: {
+    type: String,
+    required: true,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
 
-const passwordToken = mongoose.model('Token', tokenSchema)
+    // expiry time for the token, once 3600 seconds elapses, the token gets deleted from the db
+    expires: 3600,
+  },
+});
 
-module.exports = passwordToken
+const passwordToken = mongoose.model('Token', tokenSchema);
+
+module.exports = passwordToken;
