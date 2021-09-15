@@ -1,50 +1,43 @@
-const Url = require('../models/shortener')
-const validator = require('validator')
-const { deleteUrlFromCache } = require('../services/redisService')
+const redis = require('redis');
+const validator = require('validator');
+const Url = require('../models/shortener');
+const { deleteUrlFromCache } = require('../services/redisService');
 
-const redis = require('redis')
+const client = redis.createClient();
 
-const client = redis.createClient()
-
-const createShortenedUrlController = async(req, res) =>{
-
-    // function that creates random 4 letter string to be used as identifier for shortened urls.
-    try{
-
-        let randomCharacter = () =>{
-            var result = [];
-            var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';;
-            for ( var i = 0; i < 4; i++ ) {
-                result.push(characters.charAt(Math.floor(Math.random() * 
-                characters.length)));
-            }
-            return result.join('')
-        }
-        const checkUrl = validator.isURL(req.body.url)
-    
-        if (checkUrl !== true){
-            res.status(400).json({
-                status: 'error', message: 'Invalid url'
-            })
-        }
-        const url = new Url({
-            url: req.body.url,
-            randomCharacters: randomCharacter(),
-            owner: req.user._id
-        })
-    
-        const createdUrl = await url.save()
-        await deleteUrlFromCache('url')
-        res.status(201).json({
-            status: 'created', createdUrl
-        })
-
-    } catch(err){
-        res.status(400).json({
-            error: err.errors.randomCharacters.message
-        })
+const createShortenedUrlController = async (req, res) => {
+  // function that creates random 4 letter string to be used as identifier for shortened urls.
+  try {
+    const randomCharacter = () => {
+      const result = [];
+      const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      for (let i = 0; i < 4; i++) {
+        result.push(characters.charAt(Math.floor(Math.random() * characters.length)));
+      }
+      return result.join('');
+    };
+    const checkUrl = validator.isURL(req.body.url);
+    if (checkUrl !== true) {
+      res.status(400).json({
+        status: 'error', message: 'Invalid url',
+      });
     }
-}
+    const url = new Url({
+      url: req.body.url,
+      randomCharacters: randomCharacter(),
+      owner: req.user.id,
+    });
+    const createdUrl = await url.save();
+    await deleteUrlFromCache('url');
+    res.status(201).json({
+      status: 'created', createdUrl,
+    });
+  } catch (err) {
+    res.status(400).json({
+      error: err.errors.randomCharacters.message
+    });
+  }
+};
 
 const loggedInUserUrlsController = async(req, res) =>{
     const url = await Url.find({owner: req.user._id})

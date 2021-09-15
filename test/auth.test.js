@@ -75,6 +75,8 @@ describe('Authentication', function(){
         })
     })
 
+    /** Test to check if a user entered a non-existent email address.
+    */
     describe('RETURN an error if a non-existent password is entered', () => {
         it('Should not send password reset instruction to the email address provided if it does not exist in the database', (done) =>{
             chai.request(app)
@@ -91,6 +93,9 @@ describe('Authentication', function(){
         })
     })
 
+
+    /** Test to check if a user entered an email address with invalid format.
+    */
     describe('RETURN a 404 error if an invalid email format is provided', () => {
         it('Should return a response that says that the email is invalid', (done) =>{
             chai.request(app)
@@ -107,6 +112,8 @@ describe('Authentication', function(){
         })
     })
     
+    /** Test to check if a user is entering an expired or invalid token.
+    */
     describe('POST/ api/auth/resetPassword', () => {
         it('Should not change the old password to the new one the user supplied if an expired token is used', (done) =>{
             chai.request(app)
@@ -119,6 +126,27 @@ describe('Authentication', function(){
             })
             .end((err, res) =>{
                 res.should.have.status(400)
+                res.body.should.be.a('object')
+                res.body.should.have.property('error').eql('Invalid or expired password reset token!')
+            })
+            done()
+        })
+    })
+
+    /** Test to change password if a user entered the appropriate token, userId along with the new password!.
+    */
+    describe('POST/ api/auth/resetPassword', () => {
+        it('Should not change the old password to the new one the user supplied if an expired token is used', (done) =>{
+            chai.request(app)
+            .post('/api/auth/resetPassword')
+            .send({
+                "userId": "6108947f9eedc1061cd818ff",
+                "token": "06bceb79eafbf7af6d8085b13776fe044ed855a8b5bf69f7cba4d7c3921af555",
+                "password": "09/may/1999!",
+                "repeatPassword": "09/may/1999!"
+            })
+            .end((err, res) =>{
+                res.should.have.status(200)
                 res.body.should.be.a('object')
                 res.body.should.have.property('error').eql('Invalid or expired password reset token!')
             })
