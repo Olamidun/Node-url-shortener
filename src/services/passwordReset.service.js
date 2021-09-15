@@ -50,6 +50,6 @@ const resetPassword = async (userId, token, password) => {
   sendEmail(user.email, 'Password has been reset successfully', { email: user.email, link: 'https://www.google.com' });
 
   await passwordResetToken.deleteOne();
-  return { status: true, message: 'Your password has been uploaded successfully' };
+  return { status: true, message: 'Your password has been changed  successfully' };
 };
 module.exports = { requestpasswordReset, resetPassword };
