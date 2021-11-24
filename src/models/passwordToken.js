@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 
-const { Schema } = mongoose.Schema;
+// const { Schema } = mongoose.Schema;
 
 // Token schema for password reset
-const tokenSchema = new Schema({
+const tokenSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,

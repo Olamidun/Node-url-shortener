@@ -1,3 +1,144 @@
 To do
 
 Airbnb style for node
+
+
+
+const express = require("express");
+const dotenv = require("dotenv");
+const app = express();
+const mongoose = require("mongoose");
+const helmet = require("helmet");
+const morgan = require("morgan");
+
+const userRoute = require("./src/routes/userRoutes");
+const authRoute = require("./src/routes/authRoutes");
+const postRoute = require("./src/routes/postRoutes");
+const bookingRoute = require("./src/routes/bookingRoutes")
+const swaggerJsDoc = require('swagger-jsdoc');
+const swaggerUI = require('swagger-ui-express')
+
+const PORT = 5000;
+
+dotenv.config();
+
+// 'mongodb://localhost:27017/test'
+mongoose.connect('mongodb://localhost:27017/photography', {useNewUrlParser: true, useUnifiedTopology: true}, ()=>{
+    console.log("Connetcted to mongodb")
+});
+
+// MIDDLEWARE
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(helmet());
+app.use(morgan("common"));
+
+
+const options = {
+    definition: {
+        swagger: '2.0',
+        info: {
+            title: 'API for Photography website',
+            version: '1.0.0'
+        },
+    },
+    apis: ['src/routes/authRoutes.js']
+}
+
+const swaggerDocs = swaggerJsDoc(options)
+
+// ROUTES
+
+app.use("/api/users", userRoute);
+app.use("/api/auths", authRoute);
+app.use("/api/posts", postRoute);
+app.use("/api/booking", bookingRoute);
+app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocs))
+
+
+// RUNNING THE APP
+app.listen(PORT, ()=>{
+    console.log( `Server is running on port : ${PORT}`);
+})
+
+
+
+
+
+
+const express = require("express");
+const router = express.Router();
+// const { signin, signup} = require("../controllers/authController");
+const User = require("../models/User");
+const bcrypt = require("bcrypt");
+
+// SWAGGER CONFIGURATION
+/**
+ * @swagger
+ * 
+ * /api/auths/register:
+ *  post:
+ *      produces:
+ *          - application/json
+ *      parameters:
+ *          - name: username
+ *            in: formData
+ *            required: true
+ *            type: string
+ *          - name: email
+ *            in: formData
+ *            required: true
+ *            type: string
+ *          - name: password
+ *            in: formData
+ *            required: true
+ *            type: string
+ *      responses:
+ *          200:
+ *              description: Success
+ * 
+ */
+
+// REGISTER
+router.post("/register", async (req, res)=>{
+    try{
+        // generate password
+        const hashedPassword = await bcrypt.hashSync(req.body.password, 10);
+
+        // genertae new user
+        const newUser = new User({
+            username: req.body.username,
+            email: req.body.email,
+            password: hashedPassword
+        })
+
+        // saving to db
+        const { username, email } = await newUser.save();
+        res.status(200).json({
+            message: "Your account has been created successfully",
+            username,
+            email
+        });
+    }catch(err){
+        console.log(err);
+    }
+});
+
+// LOGIN
+router.post("/login", async (req,res)=>{
+    try{
+        // find user
+        const user = await User.findOne({email: req.body.email});
+        !user && res.status(404).json("User not found");
+
+        // compare password
+        const validPassword= await bcrypt.compare(req.body.password, user.password);
+        !validPassword && res.status(400).json("Password Incorrect")
+
+        res.status(200).json(user);
+    }catch(err){
+        console.log(err);
+    }
+})
+
+module.exports = router;

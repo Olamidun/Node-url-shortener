@@ -22,13 +22,13 @@ const registerUserController = async (req, res) => {
       userId: createdUser.id, // to be investigated
     });
   } catch (err) {
-    res.status(400).send(err);
+    return res.status(400).send(err);
   }
 };
 
 const loginController = async (req, res) => {
   const { error } = loginSchema.validate(req.body);
-  if (error) return res.status(400).json({ error });
+  if (error) res.status(400).json({ error });
   const user = await User.findOne({
     email: req.body.email,
   });
@@ -48,10 +48,9 @@ const loginController = async (req, res) => {
 const requestResetPasswordController = async (req, res) => {
   const { error } = requestPasswordInstructionSchema.validate(req.body);
   if (error) {
-    return res.status(400).json({ error: error.details[0].message });
+    res.status(400).json({ error: error.details[0].message });
   }
   const passwordReset = await requestpasswordReset(req.body.email);
-  console.log(passwordReset);
   res.send(passwordReset);
 };
 

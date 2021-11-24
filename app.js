@@ -1,6 +1,8 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
+const swaggerUi = require('swagger-ui-express');
+const swaggerJsDoc = require('swagger-jsdoc');
 const shortenerRouter = require('./src/routes/shortener.routes');
 const authRouter = require('./src/routes/auth.routes');
 
@@ -12,17 +14,44 @@ app.use(express.json());
 // middleware used to recognize the incoming request as strings or arrays.
 app.use(express.urlencoded({ extended: false }));
 
+const options = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'URL shortener API',
+      version: '1.0.0',
+      description: 'A URL shortener API',
+      termsOfService: 'http://example.com/terms/',
+      contact: {
+        name: 'Olamidun',
+        url: 'https://www.github.com/Olamidun',
+        email: 'kolapoolamidun@gmail.com',
+      },
+    },
+
+    servers: [
+      {
+        url: 'http://localhost:100',
+        description: 'My API Documentation',
+      },
+    ],
+  },
+  apis: ['./src/routes/*.js'],
+};
+
 try {
   mongoose.connect('//mongodb://localhost:27017/shrty', { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true });
 } catch (err) {
   console.log(err);
 }
+const specs = swaggerJsDoc(options);
 
 // Routes
 app.use('/api/shortener', shortenerRouter);
 app.use('/api/auth/', authRouter);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
-app.listen(5000, () => {
+app.listen(100, () => {
   console.log('Server is running');
 });
 

@@ -40,9 +40,9 @@ const createShortenedUrlController = async (req, res) => {
 };
 
 const loggedInUserUrlsController = async (req, res) => {
-  const url = await Url.find({ owner: req.user.id });
+  const url = await Url.find({ });
   // console.log(url)
-  const numberOfUrl = await Url.find({ owner: req.user.id }).countDocuments({}, (err, count) => {
+  const numberOfUrl = await Url.find({ }).countDocuments({}, (err, count) => {
     if (err) {
       return err;
     }

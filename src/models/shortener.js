@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 
-const { Schema } = mongoose.Schema;
+// const { Schema } = mongoose.Schema;
 
-const shortenerSchema = new Schema({
+const shortenerSchema = new mongoose.Schema({
   url: {
     type: String,
     required: true,

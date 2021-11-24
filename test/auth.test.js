@@ -129,7 +129,8 @@ describe('Authentication', () => {
     });
   });
 
-  /** Test to change password if a user entered the appropriate token, userId along with the new password!.
+  /** Test to change password if a user entered the appropriate token,
+   *  userId along with the new password!.
     */
   describe('POST/ api/auth/resetPassword', () => {
     it('Should not change the old password to the new one the user supplied if an expired token is used', (done) => {
