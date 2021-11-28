@@ -7,24 +7,29 @@ const { auth } = require('../utils/token');
 
 const shortenerRouter = express.Router();
 
-shortenerRouter.post('', auth, createShortenedUrlController);
-
 /**
  * @swagger
  * /api/shortener:
- *   get:
- *     summary: Returns all shortened urls created by a logged in user
- *     tags: [Urls]
+ *   post:
+ *     summary: Shortens a url
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - url
+ *             properties:
+ *               url:
+ *                 type: string
  *     responses:
- *       200:
- *         description: the list of the shortened urls
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/src/models/shortener.js'
+ *       201:
+ *         description: Created
+ *       400:
+ *         description: Error
  */
+shortenerRouter.post('', auth, createShortenedUrlController);
 shortenerRouter.get('', loggedInUserUrlsController);
 shortenerRouter.get('/:identifier', auth, singleUrlController);
 shortenerRouter.delete('/:identifier', auth, deleteUrlController);

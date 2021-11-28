@@ -35,21 +35,34 @@ const options = {
         description: 'My API Documentation',
       },
     ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
+    },
+    security: [{
+      bearerAuth: [],
+    }],
   },
   apis: ['./src/routes/*.js'],
 };
+
+const swaggerSpecs = swaggerJsDoc(options);
 
 try {
   mongoose.connect('//mongodb://localhost:27017/shrty', { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true });
 } catch (err) {
   console.log(err);
 }
-const specs = swaggerJsDoc(options);
 
 // Routes
 app.use('/api/shortener', shortenerRouter);
-app.use('/api/auth/', authRouter);
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
+app.use('/api/auth', authRouter);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
 app.listen(100, () => {
   console.log('Server is running');

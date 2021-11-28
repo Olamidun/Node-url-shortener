@@ -27,12 +27,14 @@ const createShortenedUrlController = async (req, res) => {
       randomCharacters: randomCharacter(),
       owner: req.user.id,
     });
+    console.log(url);
     const createdUrl = await url.save();
     await deleteUrlFromCache('url');
     res.status(201).json({
       status: 'created', createdUrl,
     });
   } catch (err) {
+    console.log('ERROR!!!!!!!', err);
     res.status(400).json({
       error: err.errors.randomCharacters.message,
     });
