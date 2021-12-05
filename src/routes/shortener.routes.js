@@ -30,9 +30,76 @@ const shortenerRouter = express.Router();
  *         description: Error
  */
 shortenerRouter.post('', auth, createShortenedUrlController);
+
+/**
+ * @swagger
+ * /api/shortener:
+ *   get:
+ *     summary: Gets list of shortened urls
+ *     responses:
+ *       200:
+ *         description: Ok
+ */
 shortenerRouter.get('', loggedInUserUrlsController);
+
+/**
+ * @swagger
+ * /api/shortener/:
+ *   get:
+ *     summary: Fetch One shortened url and its information
+ *     parameters:
+ *       - in: query
+ *         name: identifier
+ *         required: true
+ *     responses:
+ *         200:
+ *           description: Successful
+ *         400:
+ *           description: Error
+ */
 shortenerRouter.get('/:identifier', auth, singleUrlController);
+
+/**
+* @swagger
+* /api/shortener/:
+*   delete:
+*     summary: Deletes a url associated with the identifier supplied. Requires authentication.
+*     parameters:
+*       - in: query
+*         name: identifier
+*         required: true
+*     responses:
+*       204:
+*         description: Url Deleted!
+*/
 shortenerRouter.delete('/:identifier', auth, deleteUrlController);
+
+/**
+ * @swagger
+ * /api/shortener/:
+ *   put:
+ *     summary: updates a url
+ *     parameters:
+ *       - in: query
+ *         name: identifier
+ *         required: true
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - url
+ *             properties:
+ *               url:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Created
+ *       400:
+ *         description: Error
+ */
 shortenerRouter.put('/:identifier', auth, updateUrlController);
 
 module.exports = shortenerRouter;

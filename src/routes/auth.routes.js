@@ -61,7 +61,58 @@ authRouter.post('/register', registerUserController);
 
 authRouter.post('/login', loginController);
 
+/**
+ * @swagger
+ * /api/auth/requestPasswordReset:
+ *   post:
+ *     summary: Request password reset
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *             properties:
+ *               email:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Email containing password reset instructions has been sent
+ *       400:
+ *         description: Error
+ */
 authRouter.post('/requestPasswordReset', requestResetPasswordController);
+
+/**
+ * @swagger
+ * /api/auth/resetPassword:
+ *   post:
+ *     summary: Reset password
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - userId
+ *               - token
+ *               - password
+ *             properties:
+ *               userId:
+ *                 type: string
+ *               token:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Your password has been reset successfully
+ *       400:
+ *         description: Error
+ */
 authRouter.post('/resetPassword', resetPasswordController);
 
 module.exports = authRouter;
