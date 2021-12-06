@@ -1,6 +1,8 @@
 const redis = require('redis');
 
-const client = redis.createClient('redis://:pf05602cc4bc02a1a3350c890d2cfb55ab45a27b1133a52b9153530da349c771e@ec2-34-236-230-40.compute-1.amazonaws.com:8699');
+const client = redis.createClient({
+  url: process.env.REDIS_URL,
+});
 
 const setUrlToCache = async (object) => {
   client.set('url', JSON.stringify(object));
