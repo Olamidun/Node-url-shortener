@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const cors = require('cors');
 const mongoose = require('mongoose');
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsDoc = require('swagger-jsdoc');
@@ -7,6 +8,8 @@ const shortenerRouter = require('./src/routes/shortener.routes');
 const authRouter = require('./src/routes/auth.routes');
 
 const app = express();
+
+app.use(cors());
 
 // middleware used to recognize the incoming request as a JSON object.
 app.use(express.json());
@@ -57,7 +60,9 @@ try {
   mongoose.connect(process.env.DATABASE_URI || '//mongodb://localhost:27017/shrty', { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true });
 } catch (err) {
   console.log(err);
+  console.log(process.env.REDIS_URL);
 }
+
 
 // Routes
 app.use('/api/shortener', shortenerRouter);
