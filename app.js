@@ -54,7 +54,7 @@ const options = {
 const swaggerSpecs = swaggerJsDoc(options);
 
 try {
-  mongoose.connect('//mongodb://localhost:27017/shrty', { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true });
+  mongoose.connect(process.env.DATABASE_URI || '//mongodb://localhost:27017/shrty', { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true });
 } catch (err) {
   console.log(err);
 }
