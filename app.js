@@ -31,7 +31,7 @@ const options = {
 
     servers: [
       {
-        url: 'http://localhost:100',
+        url: 'http://localhost:5001',
         description: 'My API Documentation',
       },
     ],
@@ -64,7 +64,7 @@ app.use('/api/shortener', shortenerRouter);
 app.use('/api/auth', authRouter);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
-app.listen(100, () => {
+app.listen(5001, () => {
   console.log('Server is running');
 });
 
