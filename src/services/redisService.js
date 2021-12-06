@@ -1,11 +1,10 @@
 const redis = require('redis');
 
 const client = redis.createClient({
-  host: process.env.REDIS_URL,
-  port: process.env.REDIS_PORT,
-  password: process.env.REDIS_PASSWORD,
+  host: 'ec2-34-236-230-40.compute-1.amazonaws.com',
+  port: 8700,
+  password: 'pf05602cc4bc02a1a3350c890d2cfb55ab45a27b1133a52b9153530da349c771e',
 });
-
 
 // redis://:pf05602cc4bc02a1a3350c890d2cfb55ab45a27b1133a52b9153530da349c771e@
 

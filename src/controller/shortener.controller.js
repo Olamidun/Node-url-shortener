@@ -1,9 +1,6 @@
-const redis = require('redis');
 const validator = require('validator');
 const Url = require('../models/shortener');
 const { deleteUrlFromCache } = require('../services/redisService');
-
-const client = redis.createClient();
 
 const createShortenedUrlController = async (req, res) => {
   // function that creates random 4 letter string to be used as identifier for shortened urls.
