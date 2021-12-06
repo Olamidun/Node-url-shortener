@@ -1,7 +1,9 @@
 const redis = require('redis');
 
 const client = redis.createClient({
-  url: process.env.REDIS_URL,
+  host: process.env.REDIS_URL,
+  port: process.env.REDIS_PORT,
+  password: process.env.REDIS_PASSWORD,
 });
 
 const setUrlToCache = async (object) => {
