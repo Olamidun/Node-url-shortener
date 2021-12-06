@@ -6,6 +6,9 @@ const client = redis.createClient({
   password: process.env.REDIS_PASSWORD,
 });
 
+
+// redis://:pf05602cc4bc02a1a3350c890d2cfb55ab45a27b1133a52b9153530da349c771e@
+
 const setUrlToCache = async (object) => {
   client.set('url', JSON.stringify(object));
   return object;
