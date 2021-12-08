@@ -1,12 +1,25 @@
 const redis = require('redis');
 
+
+// const redisClient = async () => {
+//   try {
+//     const client = redis.createClient();
+//     client.on('error', (err) => console.log('Redis Client Error', err));
+//     await client.connect();
+
+//     const deleteUrlFromCache = await client.del('url');
+
+//     return { deleteUrlFromCache };
+//   } catch (e) {
+//     console.log(e);
+//   }
+// };
+
 const client = redis.createClient({
   host: 'ec2-34-236-230-40.compute-1.amazonaws.com',
   port: 8700,
   password: 'pf05602cc4bc02a1a3350c890d2cfb55ab45a27b1133a52b9153530da349c771e',
 });
-
-// redis://:pf05602cc4bc02a1a3350c890d2cfb55ab45a27b1133a52b9153530da349c771e@
 
 const setUrlToCache = async (object) => {
   client.set('url', JSON.stringify(object));

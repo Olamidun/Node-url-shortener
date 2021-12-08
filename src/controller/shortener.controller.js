@@ -1,6 +1,12 @@
 const validator = require('validator');
+const redis = require('redis');
 const Url = require('../models/shortener');
 const { deleteUrlFromCache } = require('../services/redisService');
+
+const client = redis.createClient({
+  host: 'ec2-34-236-230-40.compute-1.amazonaws.com',
+  port: 8700,
+  password: 'pf05602cc4bc02a1a3350c890d2cfb55ab45a27b1133a52b9153530da349c771e'});
 
 const createShortenedUrlController = async (req, res) => {
   // function that creates random 4 letter string to be used as identifier for shortened urls.
@@ -50,6 +56,7 @@ const loggedInUserUrlsController = async (req, res) => {
   if (url.length !== 0) {
     try {
       client.get('url', (err, data) => {
+        console.log('getting from cache')
         if (err) {
           return { err };
         }

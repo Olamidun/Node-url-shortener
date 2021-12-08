@@ -56,13 +56,28 @@ const options = {
 
 const swaggerSpecs = swaggerJsDoc(options);
 
-try {
-  mongoose.connect(process.env.DATABASE_URI || '//mongodb://localhost:27017/shrty', { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true });
-} catch (err) {
-  console.log(err);
-  console.log(process.env.REDIS_URL);
+if (process.env.NODE_ENV === 'development') {
+  try {
+    mongoose.connect('//mongodb://localhost:27017/shrty', { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true });
+  } catch (err) {
+    console.log(err);
+    console.log(process.env.REDIS_URL);
+  }
+} else {
+  try {
+    mongoose.connect(process.env.DATABASE_URI, {
+      useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true });
+  } catch (err) {
+    console.log(err);
+  }
 }
 
+// try {
+//   mongoose.connect(process.env.DATABASE_URI || '//mongodb://localhost:27017/shrty', { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true });
+// } catch (err) {
+//   console.log(err);
+//   console.log(process.env.REDIS_URL);
+// }
 
 // Routes
 app.use('/api/shortener', shortenerRouter);
@@ -81,4 +96,5 @@ app.use((req, res) => {
   });
 });
 
-module.exports = app; // for testing
+// for testing
+module.exports = app;
