@@ -6,6 +6,7 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerJsDoc = require('swagger-jsdoc');
 const shortenerRouter = require('./src/routes/shortener.routes');
 const authRouter = require('./src/routes/auth.routes');
+const client = require('./src/services/redisService');
 
 const app = express();
 
@@ -16,9 +17,9 @@ app.use(express.json());
 
 // middleware used to recognize the incoming request as strings or arrays.
 app.use(express.urlencoded({ extended: false }));
-console.log(process.env.REDIS_HOST);
-console.log(process.env.REDIS_PORT);
-console.log(process.env.REDIS_PASSWORD);
+// console.log(process.env.REDIS_HOST);
+// console.log(process.env.REDIS_PORT);
+// console.log(process.env.REDIS_PASSWORD);
 const options = {
   definition: {
     openapi: '3.0.0',
@@ -36,7 +37,7 @@ const options = {
 
     servers: [
       {
-        url: 'http://localhost:3000',
+        url: 'http://localhost:100',
         description: 'My API Documentation',
       },
     ],
@@ -74,19 +75,33 @@ if (process.env.NODE_ENV === 'development') {
   }
 }
 
-// try {
-//   mongoose.connect(process.env.DATABASE_URI || '//mongodb://localhost:27017/shrty', { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true });
-// } catch (err) {
-//   console.log(err);
-//   console.log(process.env.REDIS_URL);
-// }
+client.connect();
+client.on('Connect', () => {
+  console.log('Connected');
+});
+
+client.on('ready', () => {
+  console.log('Connected to redis and ready for use');
+});
+
+client.on('error', (error) => {
+  console.log(error.message);
+});
+
+client.on('end', () => {
+  console.log('Redis has been disconnected');
+});
+
+process.on('SIGINT', () => {
+  client.quit();
+});
 
 // Routes
 app.use('/api/shortener', shortenerRouter);
 app.use('/api/auth', authRouter);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
-app.listen(3000, () => {
+app.listen(100, () => {
   console.log('Server is running');
 });
 
