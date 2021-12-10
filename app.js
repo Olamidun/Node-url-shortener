@@ -17,6 +17,7 @@ app.use(express.json());
 // middleware used to recognize the incoming request as strings or arrays.
 app.use(express.urlencoded({ extended: false }));
 
+console.log(process.env.REDIS_HOST);
 const options = {
   definition: {
     openapi: '3.0.0',
@@ -56,17 +57,11 @@ const options = {
 
 const swaggerSpecs = swaggerJsDoc(options);
 
-// try {
-//   mongoose.connect('//mongodb://localhost:27017/shrty', { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true });
-// } catch (err) {
-//   console.log(err);
-// }
 if (process.env.NODE_ENV === 'development') {
   try {
     mongoose.connect('//mongodb://localhost:27017/shrty', { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true });
   } catch (err) {
     console.log(err);
-    console.log(process.env.REDIS_URL);
   }
 } else {
   try {
