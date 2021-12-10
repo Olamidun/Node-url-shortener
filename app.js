@@ -101,7 +101,7 @@ app.use('/api/shortener', shortenerRouter);
 app.use('/api/auth', authRouter);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
-app.listen(100, () => {
+app.listen(process.env.PORT || 100, () => {
   console.log('Server is running');
 });
 
