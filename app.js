@@ -56,11 +56,11 @@ const options = {
 
 const swaggerSpecs = swaggerJsDoc(options);
 
-try {
-  mongoose.connect('//mongodb://localhost:27017/shrty', { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true });
-} catch (err) {
-  console.log(err);
-}
+// try {
+//   mongoose.connect('//mongodb://localhost:27017/shrty', { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true });
+// } catch (err) {
+//   console.log(err);
+// }
 if (process.env.NODE_ENV === 'development') {
   try {
     mongoose.connect('//mongodb://localhost:27017/shrty', { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true });
