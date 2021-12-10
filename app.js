@@ -71,7 +71,7 @@ if (process.env.NODE_ENV === 'development') {
 } else {
   try {
     mongoose.connect(process.env.DATABASE_URI, {
-      useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true
+      useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true,
     });
   } catch (err) {
     console.log(err);
