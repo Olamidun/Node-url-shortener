@@ -40,15 +40,15 @@ shortenerRouter.post('', auth, createShortenedUrlController);
  *       200:
  *         description: Ok
  */
-shortenerRouter.get('', loggedInUserUrlsController);
+shortenerRouter.get('', auth, loggedInUserUrlsController);
 
 /**
  * @swagger
- * /api/shortener/:
+ * /api/shortener/{identifier}:
  *   get:
  *     summary: Fetch One shortened url and its information
  *     parameters:
- *       - in: query
+ *       - in: path
  *         name: identifier
  *         required: true
  *     responses:
@@ -61,11 +61,11 @@ shortenerRouter.get('/:identifier', auth, singleUrlController);
 
 /**
 * @swagger
-* /api/shortener/:
+* /api/shortener/{identifier}:
 *   delete:
 *     summary: Deletes a url associated with the identifier supplied. Requires authentication.
 *     parameters:
-*       - in: query
+*       - in: path
 *         name: identifier
 *         required: true
 *     responses:
@@ -76,11 +76,11 @@ shortenerRouter.delete('/:identifier', auth, deleteUrlController);
 
 /**
  * @swagger
- * /api/shortener/:
+ * /api/shortener/{identifier}:
  *   put:
  *     summary: updates a url
  *     parameters:
- *       - in: query
+ *       - in: path
  *         name: identifier
  *         required: true
  *     requestBody:

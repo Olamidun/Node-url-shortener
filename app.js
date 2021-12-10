@@ -34,7 +34,7 @@ const options = {
 
     servers: [
       {
-        url: 'http://localhost:5001',
+        url: 'http://localhost:3000',
         description: 'My API Documentation',
       },
     ],
@@ -56,6 +56,11 @@ const options = {
 
 const swaggerSpecs = swaggerJsDoc(options);
 
+try {
+  mongoose.connect('//mongodb://localhost:27017/shrty', { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true });
+} catch (err) {
+  console.log(err);
+}
 if (process.env.NODE_ENV === 'development') {
   try {
     mongoose.connect('//mongodb://localhost:27017/shrty', { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true });
@@ -84,7 +89,7 @@ app.use('/api/shortener', shortenerRouter);
 app.use('/api/auth', authRouter);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
-app.listen(5001, () => {
+app.listen(3000, () => {
   console.log('Server is running');
 });
 

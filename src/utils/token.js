@@ -13,7 +13,6 @@ const auth = (req, res, next) => {
       message: 'Access denied, please check your token!',
     });
   }
-  console.log(authorization);
   const token = authorization.slice(7, authorization.length);
   jwt.verify(token, `${process.env.SECRET}` || 'somethingsecret', (err, decode) => {
     if (err) {
