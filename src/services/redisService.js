@@ -1,13 +1,8 @@
 const redis = require('redis');
 
-// host: 'ec2-34-236-230-40.compute-1.amazonaws.com',
-//   port: 8700,
-//   password: 'pf05602cc4bc02a1a3350c890d2cfb55ab45a27b1133a52b9153530da349c771e',
-// url: 'redis://:pf05602cc4bc02a1a3350c890d2cfb55ab45a27b1133a52b9153530da349c771e@ec2-34-236-230-40.compute-1.amazonaws.com:8700',
-
 const redisConf = {
   host: 'ec2-54-161-13-227.compute-1.amazonaws.com',
-  port: "8980",
+  port: 8980,
   pass: 'p866296af92e979de3e5e2f7fc1249840fc2ec4e0d818fa65384ece1974d9307a',
 };
 
