@@ -1,7 +1,9 @@
+const { cache } = require('joi');
 const validator = require('validator');
 // const redis = require('redis');
 const Url = require('../models/shortener');
-const redisClient = require('../services/redisService');
+
+const cacheClient = require('../services/redisService');
 
 const createShortenedUrlController = async (req, res) => {
   // function that creates random 4 letter string to be used as identifier for shortened urls.
@@ -25,9 +27,8 @@ const createShortenedUrlController = async (req, res) => {
       randomCharacters: randomCharacter(),
       owner: req.user,
     });
-    console.log(url);
     const createdUrl = await url.save();
-    await redisClient.del('url');
+    await cacheClient.delAsync('url');
     res.status(201).json({
       status: 'created', createdUrl,
     });
@@ -49,18 +50,19 @@ const loggedInUserUrlsController = async (req, res) => {
     return count;
   });
   if (url.length !== 0) {
-    try {
-      const data = await redisClient.get('url');
-      if (data) {
-        console.log('Getting data from cache');
-        res.status(200).json(JSON.parse(data));
-      } else {
-        await redisClient.set('url', JSON.stringify({ url, numberOfUrl }));
-        res.status(200).json({ url, numberOfUrl });
-      }
-    } catch (err) {
-      res.status(500).json({ error: err.message });
+    // try {
+    const data = await cacheClient.getAsync('url');
+    console.log(data);
+    if (data) {
+      console.log('Getting data from cache');
+      res.status(200).json(JSON.parse(data));
+    } else {
+      await cacheClient.setAsync('url', JSON.stringify({ url, numberOfUrl }));
+      res.status(200).json({ url, numberOfUrl });
     }
+    // } catch (err) {
+    //   res.status(500).json({ error: err.message });
+    // }
   } else {
     res.status(200).json({
       message: 'You do not have any URL created',
@@ -100,10 +102,6 @@ const deleteUrlController = async (req, res) => {
       if (url) {
         if (url.owner == req.user._id) {
           url.delete();
-          redisClient.del('url');
-          res.status(204).json({
-            message: 'Url deleted!',
-          });
         } else {
           res.status(401).json({ error: 'You cannot access this url as you were not the one that shortened it' });
         }
@@ -113,6 +111,10 @@ const deleteUrlController = async (req, res) => {
           message: 'URl with that identifier does not exist',
         });
       }
+    });
+    await cacheClient.del('url');
+    res.status(204).json({
+      message: 'Url deleted!',
     });
   } catch (err) {
     res.json({
@@ -131,7 +133,6 @@ const updateUrlController = async (req, res) => {
         if (url.owner == req.user._id) {
           url.url = req.body.url;
           url.save();
-          redisClient.del('url');
           res.status(200).json({
             status: 'Url has been updated successfully',
           });
@@ -144,6 +145,10 @@ const updateUrlController = async (req, res) => {
           message: 'URl with that identifier does not exist',
         });
       }
+    });
+    await cacheClient.del('url');
+    res.status(204).json({
+      message: 'Url deleted!',
     });
   } catch (err) {
     res.json({

@@ -75,22 +75,7 @@ if (process.env.NODE_ENV === 'development') {
   }
 }
 
-client();
-// client.on('Connect', () => {
-//   console.log('Connected');
-// });
-//
-// client.on('ready', () => {
-//   console.log('Connected to redis and ready for use');
-// });
-//
-// client.on('error', (error) => {
-//   console.log(error.message);
-// });
-//
-// client.on('end', () => {
-//   console.log('Redis has been disconnected');
-// });
+// client();
 
 // Routes
 app.use('/api/shortener', shortenerRouter);
