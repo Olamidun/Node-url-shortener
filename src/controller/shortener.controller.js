@@ -28,7 +28,7 @@ const createShortenedUrlController = async (req, res) => {
       owner: req.user,
     });
     const createdUrl = await url.save();
-    await cacheClient.delAsync('url');
+    await cacheClient.delAsync(req.user._id);
     res.status(201).json({
       status: 'created', createdUrl,
     });

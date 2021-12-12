@@ -37,7 +37,7 @@ const options = {
 
     servers: [
       {
-        url: 'https://shrty-link.herokuapp.com',
+        url: 'http://localhost:100/',
         description: 'My API Documentation',
       },
     ],
