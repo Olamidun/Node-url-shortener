@@ -51,13 +51,13 @@ const loggedInUserUrlsController = async (req, res) => {
   });
   if (url.length !== 0) {
     // try {
-    const data = await cacheClient.getAsync('url');
+    const data = await cacheClient.getAsync(req.user._id);
     console.log(data);
     if (data) {
       console.log('Getting data from cache');
       res.status(200).json(JSON.parse(data));
     } else {
-      await cacheClient.setAsync('url', JSON.stringify({ url, numberOfUrl }));
+      await cacheClient.setAsync(req.user._id, JSON.stringify({ url, numberOfUrl }));
       res.status(200).json({ url, numberOfUrl });
     }
     // } catch (err) {
@@ -112,7 +112,7 @@ const deleteUrlController = async (req, res) => {
         });
       }
     });
-    await cacheClient.del('url');
+    await cacheClient.del(req.user._id);
     res.status(204).json({
       message: 'Url deleted!',
     });
@@ -146,7 +146,7 @@ const updateUrlController = async (req, res) => {
         });
       }
     });
-    await cacheClient.del('url');
+    await cacheClient.del(req.user._id);
     res.status(204).json({
       message: 'Url deleted!',
     });

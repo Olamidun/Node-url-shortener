@@ -27,9 +27,6 @@ client.on('ready', () => {
 client.on('error', (error) => {
   console.log(error.message);
 });
-// return { getUrlFromCache, deleteUrlFromCache, setUrlToCache };
-
-// module.exports = redisAsyncFunction();
 
 module.exports = client;
 
